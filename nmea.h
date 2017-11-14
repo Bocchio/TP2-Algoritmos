@@ -17,12 +17,12 @@ typedef enum {
 typedef struct{
 	double latitude;
 	double longitude;
-	double altitude; 
-	functions_interface_t functions_interface; 
+	double altitude;
 } ADT_NMEA_GGA_t;
 
 status_t parse_NMEA_from_csv(FILE *fi, ADT_Vector_t *gga, string delimiter);
 status_t parse_file_format(const string, file_format_t *);
+status_t export_NMEA(const ADT_Vector_t *vector, file_format_t format);
 
 status_t ADT_NMEA_GGA_new(ADT_NMEA_GGA_t **nmea_gga_node, string *fields);
 status_t ADT_NMEA_GGA_delete(ADT_NMEA_GGA_t **nmea_gga_node);
