@@ -7,7 +7,8 @@ char *errors[] = {
 	MSG_OK,
 	MSG_ERROR_NULL_POINTER,
 	MSG_ERROR_MEMORY,
-	ERROR_UNKNOWN_FILE_FORMAT
+	MSG_ERROR_OPENING_FILE,
+	MSG_ERROR_UNKNOWN_FILE_FORMAT
 };
 
 status_t show_error(status_t st)

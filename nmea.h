@@ -4,6 +4,8 @@
 #define FILE_FORMAT_CSV		"csv"
 #define FILE_FORMAT_KML		"kml"
 
+#define INPUT_CSV_DELIMITER	","
+
 #include <stdio.h>
 #include "types.h"
 #include "vector.h"
