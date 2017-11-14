@@ -78,3 +78,5 @@ void * ADT_Vector_get_element(const ADT_Vector_t *vector, size_t pos)
 
 	return vector->elements[pos];
 }
+
+status_t ADT_Vector_export_as_csv(ADT_Vector_t *vector,FILE*output_file,*void del);
