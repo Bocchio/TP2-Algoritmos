@@ -1,0 +1,8 @@
+#define MSG_OK                          "Exito."
+#define MSG_ERROR_NULL_POINTER          "Se intentó desreferenciar un puntero nulo."
+#define MSG_ERROR_MEMORY                "No se pudo reservar memoria."
+#define MSG_ERROR_OPENING_FILE          "No se pudo abrir el archivo." 
+#define MSG_ERROR_READING_FILE          "No se pudo leer el archivo."
+#define MSG_ERROR_WRITING_FILE          "No se pudo escribir el archivo."
+#define MSG_ERROR_PROGRAM_INVOCATION    "Programa mal invocado."
+#define MSG_ERROR_INVALID_FUNCTION_ARGS	"Una función recibió argumentos inválidos."

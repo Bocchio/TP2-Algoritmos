@@ -1,0 +1,8 @@
+#define MSG_OK                          "Success."
+#define MSG_ERROR_NULL_POINTER          "Tried to dereference a null pointer."
+#define MSG_ERROR_MEMORY                "Couldn't allocate memory."
+#define MSG_ERROR_OPENING_FILE          "Couldn't open file." 
+#define MSG_ERROR_READING_FILE          "Couldn't read file."
+#define MSG_ERROR_WRITING_FILE          "Couldn't write file."
+#define MSG_ERROR_PROGRAM_INVOCATION    "Wrong command line parameters."
+#define MSG_ERROR_INVALID_FUNCTION_ARGS	"A function recieved invalid arguments."
