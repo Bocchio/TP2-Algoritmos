@@ -63,7 +63,13 @@ status_t parse_file_format(const string *format_string, file_format_t *file_form
 	return ERROR_UNKNOWN_FILE_FORMAT;
 }
 
-status_t ADT_NMEA_GGA_as_kml(ADT_NMEA_GGA_t *nmea_gga_node, void *ctx, FILE *fo)
+status_t ADT_NMEA_GGA_as_kml(ADT_NMEA_GGA_t *nmea_gga_node, FILE *fo)
 {
-	
+	if(fo==NULL||nmea_gga_node==NULL)
+		return ERROR_NULL_POINTER;
+	if(fprintf(fo,"%d%c%d%c%d",nmea_gga_node->latitude,",",nmea_gga_node->longitude,",",nmea_gga_node->altitude)<0)
+			return st;
+	return OK;
+}
+
 }
