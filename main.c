@@ -8,11 +8,29 @@
 #include <stdlib.h>
 #include <string.h>
 #include "utils.h"
+#include "config.h"
+#include "nmea.h"
+#include "gga.h"
 
 int main(int argc, char *argv[])
 {
 	status_t st;
+    config_t config;
+    FILE *input,*output;
 
+    if((st=validate_arguments(argc,argv,&config))!=OK){
+        show_error(st);
+        return st;
+    }
+    if((input=fopen(config->input_file_path,"rt"))==NULL){
+        show_error(ERROR_OPENING_FILE);
+        return ERROR_OPENING_FILE;
+    }
+    if((output=fopen(config->output_file_path,"wt"))==NULL){
+        fclose(intput);
+        show_errror(ERROR_OPENING_FILE);
+        return ERROR_OPENING_FILE;
+    }
 	return OK;
 }
 
@@ -29,42 +47,19 @@ status_t validate_arguments(int argc, char *argv[], config_t *config)
         return ERROR_PROGRAM_INVOCATION;
 
     /* parse each argument */
-    for(i = 1; i < MAX_ARGS; i += 2){
+    for(i = 1; i < MAX_ARGS-1; i += 2){
         if(!strcmp(argv[i], CMD_ARG_FILE_FORMAT_TOKEN)){
-            if((st = parse_file_format(argv[i+1], &(config->format))) != OK)
+            if((st = parse_file_format(argv[i+1], &(config->file_format))) != OK)
                 return st;
         }
         else if(!strcmp(argv[i], CMD_ARG_OUTPUT_FILE_TOKEN)){
-            if((st = strdup(argv[i+1], &(config->file_output))) != OK)
-                return st;
-        }
-
-
-
-
-        else if(!strcmp(argv[i], CMD_ARG_DATE_START_TOKEN)){
-            if(MAX_DATE_STRING_LEN < strlen(argv[i+1]))
-                return ERROR_INVALID_DATE;
-            strcpy(date_start, argv[i+1]);
-        }
-        else if(!strcmp(argv[i], CMD_ARG_DATE_END_TOKEN)){
-            if(MAX_DATE_STRING_LEN < strlen(argv[i+1]))
-                return ERROR_INVALID_DATE;
-            strcpy(date_end, argv[i+1]);
-        }
-        else if(!strcmp(argv[i], CMD_ARG_UNIT_FORMAT_TOKEN)){
-            if((st = get_time_unit(argv[i+1], &(config->output_unit))) != OK)
+            if((st = strdup(argv[i+1], &(config->output_file_path))) != OK)
                 return st;
         }
         else
             return ERROR_PROGRAM_INVOCATION;
     }
-
-    /* if everything was fine, convert the dates to time_t */
-    if((st = date2time(date_start, date_format_start, &(config->date_start))) != OK)
-        return st;
-    if((st = date2time(date_end, date_format_end, &(config->date_end))) != OK)
-        return st;    
-
+    if((st = strdup(argv[CMD_ARG_POSITION_INPUT_FILE_TOKEN], &(config->input_file_path))) != OK)
+          return st;
 	return OK;
 }
