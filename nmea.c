@@ -4,7 +4,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "nmea.h"
-#include "nmea_gga.h"
 
 status_t parse_NMEA_from_csv(FILE *fi, ADT_Vector_t **gga_vector, string delimiter)
 {
