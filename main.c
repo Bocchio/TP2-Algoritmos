@@ -17,7 +17,7 @@ int main(int argc, char *argv[])
 	status_t st;
     config_t config;
     FILE *input,*output;
-    ADT_Vector_t ADT_vector;
+    ADT_Vector_t *ADT_vector;
 
     if((st=validate_arguments(argc,argv,&config))!=OK){
         show_error(st);
@@ -35,14 +35,16 @@ int main(int argc, char *argv[])
     if((st=parse_NMEA_from_CSV(input,&ADT_vector))!=OK)
     {
         fclose(input);
-        fclose(output);
+        if(fclose(output)==EOF)
+            show_error(ERROR_WRITING_FILE);
         show_error(st);
         return st;
     }
-    if((st=ADT_vector_export_as_CSV(&ADT_vector))!=OK)
+    if((st=ADT_export_vector(ADT_vector))!=OK)
     {
         fclose(input);
-        fclose(output);
+         if(fclose(output)==EOF)
+            show_error(ERROR_WRITING_FILE);
         show_error(st);
         return st;
     }
