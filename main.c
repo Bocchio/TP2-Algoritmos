@@ -10,7 +10,6 @@
 #include "utils.h"
 #include "config.h"
 #include "nmea.h"
-#include "gga.h"
 
 int main(int argc, char *argv[])
 {
@@ -40,10 +39,10 @@ int main(int argc, char *argv[])
         show_error(st);
         return st;
     }
-    if((st=ADT_export_vector(ADT_vector))!=OK)
+    if((st=export_NMEA(ADT_vector,config.file_format))!=OK)
     {
         fclose(input);
-         if(fclose(output)==EOF)
+        if(fclose(output)==EOF)
             show_error(ERROR_WRITING_FILE);
         show_error(st);
         return st;
