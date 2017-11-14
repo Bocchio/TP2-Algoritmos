@@ -99,9 +99,9 @@ status_t ADT_Vector_export_as_csv(ADT_Vector_t *vector, void *ctx, FILE *output_
 	return OK;
 }
 
-status_t ADT_vector_export_as_xml(ADT_Vector_t *vector, void *tabs, FILE *output_file)
+status_t ADT_Vector_export_as_xml(ADT_Vector_t *vector, void *tabs, FILE *output_file)
 {
-	size_t i;
+	size_t i, j;
 	status_t st;
 
 	if(vector == NULL || output_file == NULL)
@@ -113,8 +113,8 @@ status_t ADT_vector_export_as_xml(ADT_Vector_t *vector, void *tabs, FILE *output
 	if((st = xml_open_tag(output_file)) != OK)
 		return st;
 
-	if(vector->xml_header != NULL){
-		if(fputs(vector->xml_header, output_file) == EOF)
+	if(vector->xml_before_chunk != NULL){
+		if(fputs(vector->xml_before_chunk, output_file) == EOF)
 			return ERROR_WRITING_FILE;
 	}
 
@@ -123,13 +123,12 @@ status_t ADT_vector_export_as_xml(ADT_Vector_t *vector, void *tabs, FILE *output
 			return st;
 	}
 
-	(*(size_t *) tabs)++;
-
+	/* Export each element */
+	(*(uchar *) tabs)++;
 	for(i = 0; i < vector->len; i++){
 		if((st = vector->export_element_as_xml(vector->elements[i], tabs, output_file))!=OK)
 			return st;
 	}
-
 	(*(size_t) tabs)--;
 
 	if(vector->label != NULL){
@@ -137,8 +136,8 @@ status_t ADT_vector_export_as_xml(ADT_Vector_t *vector, void *tabs, FILE *output
 			return st;
 	}
 
-	if(vector->xml_footer != NULL){
-		if(fputs(vector->xml_footer, output_file) == EOF)
+	if(vector->xml_after_chunk != NULL){
+		if(fputs(vector->xml_after_chunk, output_file) == EOF)
 			return ERROR_WRITING_FILE;
 	}
 
@@ -155,21 +154,21 @@ status_t ADT_Vector_set_xml_label(ADT_Vector_t *vector, const string label)
 	return OK;
 }
 
-status_t ADT_Vector_set_xml_header(ADT_Vector_t *vector, const string xml_header)
+status_t ADT_Vector_set_xml_before_chunk(ADT_Vector_t *vector, const string xml_before)
 {
 	status_t st;
 
-	if((st = strdup(label, vector->xml_header)) != OK)
+	if((st = strdup(xml_before, vector->xml_before)) != OK)
 		return st;
 
 	return OK;
 }
 
-status_t ADT_Vector_set_xml_footer(ADT_Vector_t *vector, const string xml_footer)
+status_t ADT_Vector_set_xml_after_chunk(ADT_Vector_t *vector, const string xml_after_chunk)
 {
 	status_t st;
 
-	if((st = strdup(label, vector->xml_footer)) != OK)
+	if((st = strdup(xml_after, vector->xml_after_chunk)) != OK)
 		return st;
 
 	return OK;

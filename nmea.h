@@ -13,7 +13,6 @@
 #define GPGA_HEADER	"$GPGGA"
 
 #define KML_HEADER "\
-<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n\
 <kml xmlns=\"http://www.opengis.net/kml/2.2\">\n\
 	<Document>\n\
 		<name>Rutas</name>\n\
@@ -60,6 +59,6 @@ status_t export_NMEA(const ADT_Vector_t *vector, file_format_t format);
 
 status_t ADT_NMEA_GGA_new(ADT_NMEA_GGA_t **nmea_gga_node, string *fields);
 status_t ADT_NMEA_GGA_delete(ADT_NMEA_GGA_t **nmea_gga_node);
-status_t ADT_NMEA_GGA_as_kml(ADT_NMEA_GGA_t *nmea_gga_node, void*ctx,FILE *fo);
+status_t ADT_NMEA_GGA_export_as_kml(ADT_NMEA_GGA_t *nmea_gga_node, void *tabs, FILE *fo);
 
 #endif

@@ -14,6 +14,8 @@ typedef enum {
 	TRUE
 } bool_t;
 
+typedef unsigned char uchar;
+
 typedef char * string;
 
 #endif 
