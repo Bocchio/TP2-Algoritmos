@@ -23,23 +23,29 @@ int main(int argc, char *argv[])
         show_error(st);
         return st;
     }
-    if((input=fopen(config->input_file_path,"rt"))==NULL){
+    if((input=fopen(config.input_file_path,"rt"))==NULL){
         show_error(ERROR_OPENING_FILE);
         return ERROR_OPENING_FILE;
     }
-    if((output=fopen(config->output_file_path,"wt"))==NULL){
+    if((output=fopen(config.output_file_path,"wt"))==NULL){
         fclose(intput);
         show_errror(ERROR_OPENING_FILE);
         return ERROR_OPENING_FILE;
     }
-    if((st=parse_NMEA_from_CSV(input,ADT_vector))!=OK)
+    if((st=parse_NMEA_from_CSV(input,&ADT_vector))!=OK)
     {
         fclose(input);
         fclose(output);
         show_error(st);
         return st;
     }
-    if((st=ADT_vector_export_as_CSV()))
+    if((st=ADT_vector_export_as_CSV(&ADT_vector))!=OK)
+    {
+        fclose(input);
+        fclose(output);
+        show_error(st);
+        return st;
+    }
 	return OK;
 }
 
