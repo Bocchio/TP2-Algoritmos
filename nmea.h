@@ -6,9 +6,9 @@
 typedef enum {
 	FORMAT_KML,
 	FORMAT_CSV
-} file_format;
+} file_format_t;
 
 status_t parse_NMEA();
-status_t parse_file_format(string *, file_format *);
+status_t parse_file_format(string *, file_format_t *);
 
 #endif
