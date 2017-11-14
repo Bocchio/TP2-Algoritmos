@@ -6,10 +6,13 @@
 #include "adt.h"
 #include "vector.h"
 
+
 #define FILE_FORMAT_CSV		"csv"
 #define FILE_FORMAT_KML		"kml"
 
 #define GPGA_HEADER	"$GPGGA"
+
+#define KML_HEADER "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
 
 typedef enum {
 	FORMAT_KML,
