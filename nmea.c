@@ -1,8 +1,8 @@
 #include <string.h>
-
+#include <stdio.h>
 #include "nmea"
 
-status_t parse_NMEA()
+status_t parse_NMEA(FILE *fi, ADT_Vector_t *gga)
 {
 
 	return OK;
@@ -18,6 +18,6 @@ status_t parse_file_format(const string *format_string, file_format_t *file_form
 		*file_format = FORMAT_CSV;
 		return OK;
 	}
-	
-	return OK;
+
+	return ERROR_UNKNOWN_FILE_FORMAT;
 }
