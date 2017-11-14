@@ -6,3 +6,4 @@
 #define MSG_ERROR_WRITING_FILE          "Couldn't write file."
 #define MSG_ERROR_PROGRAM_INVOCATION    "Wrong command line parameters."
 #define MSG_ERROR_INVALID_FUNCTION_ARGS	"A function recieved invalid arguments."
+#define MSG_ERROR_UNKNOWN_FILE_FORMAT	"Unknown file format"

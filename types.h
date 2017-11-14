@@ -4,7 +4,8 @@
 typedef enum {
 	OK,
 	ERROR_NULL_POINTER,
-	ERROR_MEMORY
+	ERROR_MEMORY,
+	ERROR_UNKNOWN_FILE_FORMAT
 } status_t;
 
 typedef enum {

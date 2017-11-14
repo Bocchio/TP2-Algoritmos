@@ -1,6 +1,9 @@
 #ifndef NMEA__H
 #define NMEA__H
 
+#define FILE_FORMAT_CSV		"csv"
+#define FILE_FORMAT_KML		"kml"
+
 #include "types.h"
 
 typedef enum {
