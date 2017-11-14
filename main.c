@@ -20,9 +20,6 @@ status_t validate_arguments(int argc, char *argv[], config_t *config)
 {
 	size_t i;
     status_t st;
-    file_format_t output_file_format;
-    string input_file;
-    string output_file;
 
     if(argv == NULL || config == NULL)
         return ERROR_NULL_POINTER;
