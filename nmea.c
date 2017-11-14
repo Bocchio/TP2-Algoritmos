@@ -4,6 +4,21 @@
 
 status_t parse_NMEA(FILE *fi, ADT_Vector_t *gga)
 {
+	status_t st;
+	bool_t eof = FALSE;
+	string line;
+	string *fields;
+
+	while(eof == FALSE){
+		if((st = readline(fi, &line, &eof)) != OK){
+			return st;
+		}
+		if((st = ) != OK){
+
+		}
+
+	}
+
 
 	return OK;
 }
