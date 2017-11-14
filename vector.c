@@ -99,7 +99,7 @@ status_t ADT_Vector_export_as_csv(ADT_Vector_t *vector, void *ctx, FILE *output_
 	return OK;
 }
 
-status_t ADT_vector_export_as_xml(ADT_Vector_t *vector, void *ctx, FILE *output_file)
+status_t ADT_vector_export_as_xml(ADT_Vector_t *vector, void *tabs, FILE *output_file)
 {
 	size_t i;
 	status_t st;
@@ -110,25 +110,34 @@ status_t ADT_vector_export_as_xml(ADT_Vector_t *vector, void *ctx, FILE *output_
 	if((st = xml_print_header(output_file)) != OK)
 		return st;
 
-
+	if((st = xml_open_tag(output_file)) != OK)
+		return st;
 
 	if(vector->xml_header != NULL){
 		if(fputs(vector->xml_header, output_file) == EOF)
 			return ERROR_WRITING_FILE;
 	}
-	if(vector->xml_footer != NULL){
-		if(fputs(vector->xml_header, output_file) == EOF)
-			return ERROR_WRITING_FILE;
-	}
-	if(vector->xml_label != NULL){
-		fputc()
-		if(fputs(vector->xml_label, output_file) == EOF)
-			return ERROR_WRITING_FILE;
-	}
-	for(i = 0; i < vector->len; i++){
-		if((st=vector->export_element_as_kml(vector->elements[i], ctx, output_file))!=OK)
+
+	if(vector->label != NULL){
+		if((st = xml_open_tag(vector->label, NULL, output_file)) != OK)
 			return st;
 	}
+
+	for(i = 0; i < vector->len; i++){
+		if((st=vector->export_element_as_xml(vector->elements[i], ctx, output_file))!=OK)
+			return st;
+	}
+
+	if(vector->label != NULL){
+		if((st = xml_close_tag(vector->label, output_file)) != OK)
+			return st;
+	}
+
+	if(vector->xml_footer != NULL){
+		if(fputs(vector->xml_footer, output_file) == EOF)
+			return ERROR_WRITING_FILE;
+	}
+
 	return OK;
 }
 
