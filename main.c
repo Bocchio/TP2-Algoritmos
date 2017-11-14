@@ -20,6 +20,7 @@ status_t validate_arguments(int argc, char *argv[], config_t *config)
 {
 	size_t i;
     status_t st;
+    file_format_t output_file_format;
 
     if(argv == NULL || config == NULL)
         return ERROR_NULL_POINTER;
@@ -29,14 +30,18 @@ status_t validate_arguments(int argc, char *argv[], config_t *config)
 
     /* parse each argument */
     for(i = 1; i < MAX_ARGS; i += 2){
-        if(!strcmp(argv[i], CMD_ARG_DATE_START_FORMAT_TOKEN)){
-            if((st = get_date_format(argv[i+1], &date_format_start)) != OK)
+        if(!strcmp(argv[i], CMD_ARG_FILE_FORMAT_TOKEN)){
+            if((st = parse_file_format(argv[i+1], &(config->format))) != OK)
                 return st;
         }
-        else if(!strcmp(argv[i], CMD_ARG_DATE_END_FORMAT_TOKEN)){
-            if((st = get_date_format(argv[i+1], &date_format_end)) != OK)
+        else if(!strcmp(argv[i], CMD_ARG_OUTPUT_FILE_TOKEN)){
+            if((st = strdup(argv[i+1], &(config->file_output))) != OK)
                 return st;
         }
+
+
+
+
         else if(!strcmp(argv[i], CMD_ARG_DATE_START_TOKEN)){
             if(MAX_DATE_STRING_LEN < strlen(argv[i+1]))
                 return ERROR_INVALID_DATE;
