@@ -15,6 +15,8 @@ status_t ADT_Vector_new(ADT_Vector_t **vector, functions_interface_t *element_fu
 	(*vector)->alloc_size = 0;
 	(*vector)->delete_element = element_functions->destructor;
 	(*vector)->clone_element = element_functions->clonator;
+	(*vector)->export_element_as_csv = element_functions->csv_exporter;
+	(*vector)->export_element_as_kml = element_functions->kml_exporter;
 
 	return OK;
 }
