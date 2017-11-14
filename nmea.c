@@ -1,24 +1,41 @@
 #include <string.h>
 #include <stdio.h>
-#include "nmea"
+#include "vector.h"
+#include "nmea.h"
+#include "nmea_gga.h"
 
-status_t parse_NMEA(FILE *fi, ADT_Vector_t *gga)
+status_t parse_NMEA_from_csv(FILE *fi, ADT_Vector_t *gga_vector, string delimiter)
 {
 	status_t st;
+	size_t i;
 	bool_t eof = FALSE;
 	string line;
 	string *fields;
+	ADT_NMEA_GGA_t *node;
+
+	if((st = ADT_Vector_new(&gga_vector, )) != OK){
+		return st;
+	}
 
 	while(eof == FALSE){
 		if((st = readline(fi, &line, &eof)) != OK){
 			return st;
 		}
-		if((st = ) != OK){
-
+		if((st = split(line, &fields, delimiter)) != OK){
+			return st;
+		}
+		if((st = ADT_NMEA_GGA_new(&node, fields)) != OK){
+			for(i = 0; fields[i] != NULL; i++)
+				free(fields[i]);
+			free(fields);
+			return st;
 		}
 
-	}
 
+		for(i = 0; fields[i] != NULL; i++)
+			free(fields[i]);
+		free(fields);
+	}
 
 	return OK;
 }
