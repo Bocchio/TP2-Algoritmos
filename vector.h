@@ -11,8 +11,7 @@ typedef struct {
 	size_t len;
 	size_t alloc_size;
 
-	string xml_opening_tag;
-	string xml_closing_tag;
+	string xml_label;
 	string xml_header;
 	string xml_footer;
 
@@ -26,7 +25,7 @@ status_t ADT_Vector_new(ADT_Vector_t **vector, functions_interface_t *element_fu
 status_t ADT_Vector_delete(ADT_Vector_t **vector);
 status_t ADT_Vector_append(ADT_Vector_t *vector, void *new_item);
 status_t ADT_Vector_export_as_csv(ADT_Vector_t *vector, void *ctx, FILE *output_file);
-status_t ADT_Vector_export_as_xml(ADT_Vector_t *vector, void *ctx, FILE *output_file);
+status_t ADT_Vector_export_as_xml(ADT_Vector_t *vector, void *tabs, FILE *output_file);
 status_t ADT_Vector_set_xml_label(ADT_Vector_t *vector, const string label);
 status_t ADT_Vector_set_xml_header(ADT_Vector_t *vector, const string xml_header);
 status_t ADT_Vector_set_xml_footer(ADT_Vector_t *vector, const string xml_footer);
