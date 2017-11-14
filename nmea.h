@@ -1,1 +1,4 @@
-functions_interface_t functions_interface;
+#ifndef NMEA__H
+#define NMEA__H
+
+#endif
