@@ -15,6 +15,10 @@ status_t ADT_Vector_new(ADT_Vector_t **vector, functions_interface_t *element_fu
 	(*vector)->len = 0;
 	(*vector)->alloc_size = 0;
 	(*vector)->element_label = NULL;
+
+	(*vector)->xml_header = NULL;
+	(*vector)->xml_footer = NULL;
+
 	(*vector)->delete_element = element_functions->destructor;
 	(*vector)->clone_element = element_functions->clonator;
 	(*vector)->export_element_as_csv = element_functions->csv_exporter;
@@ -100,9 +104,20 @@ status_t ADT_vector_export_as_xml(ADT_Vector_t *vector, void *ctx, FILE *output_
 	size_t i;
 	status_t st;
 
-	if(fputs(output_file, KML_HEADER)==EOF)
-		return ERROR_WRITING_FILE;
-	for(i=0;i<vector->len;i++){
+	if(vector->xml_header != NULL){
+		if(fputs(vector->xml_header, output_file) == EOF)
+			return ERROR_WRITING_FILE;
+	}
+	if(vector->xml_footer != NULL){
+		if(fputs(vector->xml_header, output_file) == EOF)
+			return ERROR_WRITING_FILE;
+	}
+	if(vector->xml_label != NULL){
+		fputc()
+		if(fputs(vector->xml_label, output_file) == EOF)
+			return ERROR_WRITING_FILE;
+	}
+	for(i = 0; i < vector->len; i++){
 		if((st=vector->export_element_as_kml(vector->elements[i],ctx,output_file))!=OK)
 			return st;
 	}

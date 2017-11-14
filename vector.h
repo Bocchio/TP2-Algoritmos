@@ -11,7 +11,8 @@ typedef struct {
 	size_t len;
 	size_t alloc_size;
 
-	string xml_label;
+	string xml_opening_tag;
+	string xml_closing_tag;
 	string xml_header;
 	string xml_footer;
 
