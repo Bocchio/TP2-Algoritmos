@@ -21,7 +21,7 @@ status_t parse_NMEA_from_csv(FILE *fi, ADT_Vector_t **gga_vector, string delimit
 		return st;
 	}
 
-	/* Create a node from every line of the file */
+	/* Read every line of the file */
 	while(eof == FALSE){
 		if((st = readline(fi, &line, &eof)) != OK){
 			return st;
@@ -29,12 +29,16 @@ status_t parse_NMEA_from_csv(FILE *fi, ADT_Vector_t **gga_vector, string delimit
 		if((st = split(line, &fields, delimiter)) != OK){
 			return st;
 		}
+		/* If it's a GGA node append it to the vector */
 		if(!strcmp(fields[0], GPGGA_HEADER)){
 			if((st = ADT_NMEA_GGA_new(&node, fields)) != OK){
 				for(i = 0; fields[i] != NULL; i++)
 					free(fields[i]);
 				free(fields);
 				return st;
+			}
+			if((st = ADT_Vector_append(*gga_vector, node)) != OK){
+				
 			}
 		}
 
