@@ -104,6 +104,14 @@ status_t ADT_vector_export_as_xml(ADT_Vector_t *vector, void *ctx, FILE *output_
 	size_t i;
 	status_t st;
 
+	if(vector == NULL || output_file == NULL)
+		return ERROR_NULL_POINTER;
+
+	if((st = xml_print_header(output_file)) != OK)
+		return st;
+
+
+
 	if(vector->xml_header != NULL){
 		if(fputs(vector->xml_header, output_file) == EOF)
 			return ERROR_WRITING_FILE;
@@ -118,7 +126,7 @@ status_t ADT_vector_export_as_xml(ADT_Vector_t *vector, void *ctx, FILE *output_
 			return ERROR_WRITING_FILE;
 	}
 	for(i = 0; i < vector->len; i++){
-		if((st=vector->export_element_as_kml(vector->elements[i],ctx,output_file))!=OK)
+		if((st=vector->export_element_as_kml(vector->elements[i], ctx, output_file))!=OK)
 			return st;
 	}
 	return OK;
