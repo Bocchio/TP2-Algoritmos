@@ -16,18 +16,21 @@ int main(int argc, char *argv[])
 {
 	status_t st;
     config_t config;
+    FILE *input,*output;
 
-    if((st=validate_arguments(argc,argv,&config))!=OK)
-    {
-        show_error(st)
+    if((st=validate_arguments(argc,argv,&config))!=OK){
+        show_error(st);
         return st;
     }
-    if(fopen=("config->input_file","rt")==NULL)
-    {
-        show_error(ERROR_OPENING_FILE)
+    if((input=fopen(config->input_file_path,"rt"))==NULL){
+        show_error(ERROR_OPENING_FILE);
         return ERROR_OPENING_FILE;
     }
-
+    if((output=fopen(config->output_file_path,"wt"))==NULL){
+        fclose(intput);
+        show_errror(ERROR_OPENING_FILE);
+        return ERROR_OPENING_FILE;
+    }
 	return OK;
 }
 
@@ -46,17 +49,17 @@ status_t validate_arguments(int argc, char *argv[], config_t *config)
     /* parse each argument */
     for(i = 1; i < MAX_ARGS-1; i += 2){
         if(!strcmp(argv[i], CMD_ARG_FILE_FORMAT_TOKEN)){
-            if((st = parse_file_format(argv[i+1], &(config->format))) != OK)
+            if((st = parse_file_format(argv[i+1], &(config->file_format))) != OK)
                 return st;
         }
         else if(!strcmp(argv[i], CMD_ARG_OUTPUT_FILE_TOKEN)){
-            if((st = strdup(argv[i+1], &(config->output_file))) != OK)
+            if((st = strdup(argv[i+1], &(config->output_file_path))) != OK)
                 return st;
         }
         else
             return ERROR_PROGRAM_INVOCATION;
     }
-    if((st = strdup(argv[CMD_ARG_POSITION_INPUT_FILE_TOKEN], &(config->input_file))) != OK)
+    if((st = strdup(argv[CMD_ARG_POSITION_INPUT_FILE_TOKEN], &(config->input_file_path))) != OK)
           return st;
 	return OK;
 }
