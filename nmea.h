@@ -12,7 +12,34 @@
 
 #define GPGA_HEADER	"$GPGGA"
 
-#define KML_HEADER "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
+#define KML_HEADER "\
+<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n\
+<kml xmlns=\"http://www.opengis.net/kml/2.2\">\n\
+	<Document>\n\
+		<name>Rutas</name>\n\
+		<description>Ejemplos de rutas</description>\n\
+		<Style id=\"yellowLineGreenPoly\">\n\
+			<LineStyle>\n\
+				<color>7f00ffff</color>\n\
+				<width>4</width>\n\
+			</LineStyle>\n\
+			<PolyStyle>\n\
+				<color>7f00ff00</color>\n\
+			</PolyStyle>\n\
+		</Style>\n\
+		<Placemark>\n\
+			<name>Relieve absoluto</name>\n\
+			<description>Pared verde transparente con contornos amarillos</description>\n\
+			<styleUrl>#yellowLineGreenPoly</styleUrl>\n\
+			<LineString>\n\
+				<extrude>1</extrude>\n\
+				<tessellate>1</tessellate>\n\
+				<altitudeMode>absolute</altitudeMode>\n"
+
+#define KML_FOOTER "\
+		</Placemark>\n\
+	</Document>\n\
+</kml>"
 
 typedef enum {
 	FORMAT_KML,
