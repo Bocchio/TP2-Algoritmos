@@ -119,17 +119,21 @@ status_t ADT_vector_export_as_xml(ADT_Vector_t *vector, void *tabs, FILE *output
 	}
 
 	if(vector->label != NULL){
-		if((st = xml_open_tag(vector->label, NULL, output_file)) != OK)
+		if((st = xml_open_tag(vector->label, NULL, *(size_t *) tabs, output_file)) != OK)
 			return st;
 	}
+
+	(*(size_t *) tabs)++;
 
 	for(i = 0; i < vector->len; i++){
-		if((st=vector->export_element_as_xml(vector->elements[i], ctx, output_file))!=OK)
+		if((st = vector->export_element_as_xml(vector->elements[i], tabs, output_file))!=OK)
 			return st;
 	}
 
+	(*(size_t) tabs)--;
+
 	if(vector->label != NULL){
-		if((st = xml_close_tag(vector->label, output_file)) != OK)
+		if((st = xml_close_tag(vector->label, *(size_t *) tabs, output_file)) != OK)
 			return st;
 	}
 
