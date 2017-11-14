@@ -1,13 +1,15 @@
 #ifndef NMEA__H
 #define NMEA__H
 
-#define FILE_FORMAT_CSV		"csv"
-#define FILE_FORMAT_KML		"kml"
-
 #include <stdio.h>
 #include "types.h"
 #include "adt.h"
 #include "vector.h"
+
+#define FILE_FORMAT_CSV		"csv"
+#define FILE_FORMAT_KML		"kml"
+
+#define GPGA_HEADER	"$GPGGA"
 
 typedef enum {
 	FORMAT_KML,

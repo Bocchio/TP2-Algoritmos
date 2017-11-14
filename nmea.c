@@ -1,10 +1,8 @@
-#include <string.h>
-#include <stdio.h>
-#include "vector.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+#include "vector.h"
 #include "nmea.h"
-#include "nmea_gga.h"
 
 status_t parse_NMEA_from_csv(FILE *fi, ADT_Vector_t **gga_vector, string delimiter)
 {
@@ -14,11 +12,16 @@ status_t parse_NMEA_from_csv(FILE *fi, ADT_Vector_t **gga_vector, string delimit
 	string line;
 	string *fields;
 	ADT_NMEA_GGA_t *node;
+	functions_interface_t gga_functions;
 
-	if((st = ADT_Vector_new(gga_vector, )) != OK){
+	gga_functions.destructor = &ADT_NMEA_GGA_delete;
+	gga_functions.clonator = NULL;
+
+	if((st = ADT_Vector_new(gga_vector, gga_functions)) != OK){
 		return st;
 	}
 
+	/* Create a node from every line of the file */
 	while(eof == FALSE){
 		if((st = readline(fi, &line, &eof)) != OK){
 			return st;
@@ -26,13 +29,14 @@ status_t parse_NMEA_from_csv(FILE *fi, ADT_Vector_t **gga_vector, string delimit
 		if((st = split(line, &fields, delimiter)) != OK){
 			return st;
 		}
-		if((st = ADT_NMEA_GGA_new(&node, fields)) != OK){
-			for(i = 0; fields[i] != NULL; i++)
-				free(fields[i]);
-			free(fields);
-			return st;
+		if(!strcmp(fields[0], GPGGA_HEADER)){
+			if((st = ADT_NMEA_GGA_new(&node, fields)) != OK){
+				for(i = 0; fields[i] != NULL; i++)
+					free(fields[i]);
+				free(fields);
+				return st;
+			}
 		}
-
 
 		for(i = 0; fields[i] != NULL; i++)
 			free(fields[i]);
