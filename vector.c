@@ -81,4 +81,28 @@ void * ADT_Vector_get_element(const ADT_Vector_t *vector, size_t pos)
 	return vector->elements[pos];
 }
 
-status_t ADT_Vector_export_as_csv(ADT_Vector_t *vector,FILE*output_file,*void del);
+status_t ADT_Vector_export_as_csv(ADT_Vector_t *vector,FILE*output_file,void*ctx)
+{
+	size_t i;
+	status_t st;
+
+	for(i=0;i<vector->len;i++){
+		if((st=vector->export_element_as_csv(vector->elements[i],ctx,output_file))!=OK)
+			return st;
+	}
+	return OK;
+}
+
+status_t ADT_vector_export_as_kml(ADT_Vector_t *vector,FILE*output_file,void*ctx)
+{
+	size_t i;
+	status_t st;
+
+	if(fputs(output_file, KML_HEADER)==EOF)
+		return ERROR_WRITING_FILE;
+	for(i=0;i<vector->len;i++){
+		if((st=vector->export_element_as_kml(vector->elements[i],ctx,output_file))!=OK)
+			return st;
+	}
+	return OK;
+}

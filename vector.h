@@ -12,8 +12,8 @@ typedef struct {
 	size_t alloc_size;
 	destructor_t delete_element;
 	clonator_t clone_element;
-	exporter_t export_element_as_csv;
-	exporter_t export_element_as_kml;
+	printer_t export_element_as_csv;
+	printer_t export_element_as_kml;
 } ADT_Vector_t;
 
 status_t ADT_Vector_new(ADT_Vector_t **vector, functions_interface_t *element_functions);
