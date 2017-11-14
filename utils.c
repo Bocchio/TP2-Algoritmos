@@ -64,6 +64,7 @@ status_t strdup(const string src, string *dest)
 	return OK;
 }
 
+
 /* Creates a dynamic array of the substrings in "src" using the
    separator string "delim". Appends NULL at the end of that array.
    For example:
@@ -122,6 +123,19 @@ status_t split(const string src, string **dest, string delim)
 		i += strlen(aux) + delim_len - 1;
 	}
 	(*dest)[j] = NULL;
+
+	return OK;
+}
+
+/* Receives a pointer to a string array and frees it */
+status_t free_string_array(string **s)
+{
+	size_t i;
+
+	for(i = 0; (*s)[i] != NULL; i++)
+		free((*s)[i]);
+	free(*s);
+	*s = NULL;
 
 	return OK;
 }

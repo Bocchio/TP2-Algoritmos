@@ -23,28 +23,27 @@ status_t parse_NMEA_from_csv(FILE *fi, ADT_Vector_t **gga_vector, string delimit
 
 	/* Read every line of the file */
 	while(eof == FALSE){
+		/* Get the fields*/
 		if((st = readline(fi, &line, &eof)) != OK){
 			return st;
 		}
 		if((st = split(line, &fields, delimiter)) != OK){
 			return st;
 		}
+		free(line);
+
 		/* If it's a GGA node append it to the vector */
 		if(!strcmp(fields[0], GPGGA_HEADER)){
 			if((st = ADT_NMEA_GGA_new(&node, fields)) != OK){
-				for(i = 0; fields[i] != NULL; i++)
-					free(fields[i]);
-				free(fields);
+				free_string_array(fields);
 				return st;
 			}
 			if((st = ADT_Vector_append(*gga_vector, node)) != OK){
-				
+				free_string_array(fields);
+				return st;
 			}
 		}
-
-		for(i = 0; fields[i] != NULL; i++)
-			free(fields[i]);
-		free(fields);
+		free_string_array(fields);
 	}
 
 	return OK;
