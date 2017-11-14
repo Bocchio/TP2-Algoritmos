@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "vector.h"
+#include "utils.h"
 
 status_t ADT_Vector_new(ADT_Vector_t **vector, functions_interface_t *element_functions)
 {
@@ -13,10 +14,11 @@ status_t ADT_Vector_new(ADT_Vector_t **vector, functions_interface_t *element_fu
 	(*vector)->elements = NULL;
 	(*vector)->len = 0;
 	(*vector)->alloc_size = 0;
+	(*vector)->element_label = NULL;
 	(*vector)->delete_element = element_functions->destructor;
 	(*vector)->clone_element = element_functions->clonator;
 	(*vector)->export_element_as_csv = element_functions->csv_exporter;
-	(*vector)->export_element_as_kml = element_functions->kml_exporter;
+	(*vector)->export_element_as_xml = element_functions->xml_exporter;
 
 	return OK;
 }
@@ -81,7 +83,7 @@ void * ADT_Vector_get_element(const ADT_Vector_t *vector, size_t pos)
 	return vector->elements[pos];
 }
 
-status_t ADT_Vector_export_as_csv(ADT_Vector_t *vector,FILE*output_file,void*ctx)
+status_t ADT_Vector_export_as_csv(ADT_Vector_t *vector, void *ctx, FILE *output_file)
 {
 	size_t i;
 	status_t st;
@@ -93,7 +95,7 @@ status_t ADT_Vector_export_as_csv(ADT_Vector_t *vector,FILE*output_file,void*ctx
 	return OK;
 }
 
-status_t ADT_vector_export_as_kml(ADT_Vector_t *vector,FILE*output_file,void*ctx)
+status_t ADT_vector_export_as_xml(ADT_Vector_t *vector, void *ctx, FILE *output_file)
 {
 	size_t i;
 	status_t st;
@@ -104,5 +106,35 @@ status_t ADT_vector_export_as_kml(ADT_Vector_t *vector,FILE*output_file,void*ctx
 		if((st=vector->export_element_as_kml(vector->elements[i],ctx,output_file))!=OK)
 			return st;
 	}
+	return OK;
+}
+
+status_t ADT_Vector_set_xml_label(ADT_Vector_t *vector, const string label)
+{
+	status_t st;
+
+	if((st = strdup(label, vector->xml_label)) != OK)
+		return st;
+
+	return OK;
+}
+
+status_t ADT_Vector_set_xml_header(ADT_Vector_t *vector, const string xml_header)
+{
+	status_t st;
+
+	if((st = strdup(label, vector->xml_header)) != OK)
+		return st;
+
+	return OK;
+}
+
+status_t ADT_Vector_set_xml_footer(ADT_Vector_t *vector, const string xml_footer)
+{
+	status_t st;
+
+	if((st = strdup(label, vector->xml_footer)) != OK)
+		return st;
+
 	return OK;
 }

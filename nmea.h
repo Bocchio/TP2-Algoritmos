@@ -41,6 +41,8 @@
 	</Document>\n\
 </kml>"
 
+#define NMEA_GGA_LABEL	"coordinates"
+
 typedef enum {
 	FORMAT_KML,
 	FORMAT_CSV
