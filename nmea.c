@@ -41,6 +41,8 @@ status_t parse_NMEA(FILE *fi, ADT_Vector_t **gga_vector)
 
 	gga_functions.destructor = (destructor_t) &ADT_NMEA_GGA_delete;
 	gga_functions.clonator = (clonator_t) NULL;
+	gga_functions.csv_exporter = (printer_t) &ADT_NMEA_GGA_export_as_csv;
+	gga_functions.xml_exporter = (printer_t) &ADT_NMEA_GGA_export_as_kml;
 
 	if((st = ADT_Vector_new(gga_vector, &gga_functions)) != OK){
 		return st;
@@ -131,7 +133,7 @@ status_t ADT_NMEA_GGA_delete(ADT_NMEA_GGA_t **gga_node)
 	return OK;
 }
 
-status_t ADT_NMEA_GGA_export_as_kml(ADT_NMEA_GGA_t *gga, void *_ctx, FILE *fo)
+status_t ADT_NMEA_GGA_export_as_kml(const ADT_NMEA_GGA_t *gga, void *_ctx, FILE *fo)
 {
 	size_t i;
 	xml_ctx_t *ctx;
@@ -147,13 +149,13 @@ status_t ADT_NMEA_GGA_export_as_kml(ADT_NMEA_GGA_t *gga, void *_ctx, FILE *fo)
 			return ERROR_WRITING_FILE;
 	}
 	/* Print the data */
-	if(fprintf(fo, "%f%c%f%c%f", gga->latitude, ',', gga->longitude, ',', gga->altitude) < 0)
+	if(fprintf(fo, "%f%c%f%c%f\n", gga->latitude, ',', gga->longitude, ',', gga->altitude) < 0)
 		return ERROR_WRITING_FILE;
 
 	return OK;
 }
 
-status_t ADT_NMEA_GGA_export_as_csv(ADT_NMEA_GGA_t *gga, void *ctx, FILE *fo)
+status_t ADT_NMEA_GGA_export_as_csv(const ADT_NMEA_GGA_t *gga, void *ctx, FILE *fo)
 {
 	string delim;
 
@@ -161,7 +163,7 @@ status_t ADT_NMEA_GGA_export_as_csv(ADT_NMEA_GGA_t *gga, void *ctx, FILE *fo)
 		return ERROR_NULL_POINTER;
 	
 	delim = ctx;
-	if(fprintf(fo, "%f%s%f%s%f", gga->latitude, delim, gga->longitude, delim, gga->altitude) < 0)
+	if(fprintf(fo, "%f%s%f%s%f\n", gga->latitude, delim, gga->longitude, delim, gga->altitude) < 0)
 		return ERROR_WRITING_FILE;
 
 	return OK;

@@ -67,11 +67,15 @@ status_t validate_arguments(int argc, char *argv[], config_t *config)
     /* parse each argument, takes into account that the last argument is positional */
     for(i = 1; i < MAX_ARGS-1; i += 2){
         if(!strcmp(argv[i], CMD_ARG_FILE_FORMAT_TOKEN)){
-            if(!strcmp(argv[i], FILE_FORMAT_CSV_FLAG))
+            if(!strcmp(argv[i+1], FILE_FORMAT_CSV_FLAG)){
                 config->file_format = FORMAT_CSV;
-            if(!strcmp(argv[i], FILE_FORMAT_KML_FLAG))
+            }
+            else if(!strcmp(argv[i+1], FILE_FORMAT_KML_FLAG)){
                 config->file_format = FORMAT_KML;
-            return ERROR_UNKNOWN_FILE_FORMAT;
+            }
+            else{
+                return ERROR_UNKNOWN_FILE_FORMAT;
+            }
         }
         else if(!strcmp(argv[i], CMD_ARG_OUTPUT_FILE_TOKEN)){
             if((st = strdup(argv[i+1], &(config->fo_path))) != OK)

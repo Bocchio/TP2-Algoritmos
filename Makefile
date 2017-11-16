@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -ansi -Wall -pedantic-errors -Wno-overlength-strings
+CFLAGS = -ansi -Wall -pedantic-errors -Wno-overlength-strings -g
 LANGUAGE = -DENGLISH
 OBJS = $(patsubst %.c,%.o,$(wildcard *.c))
 

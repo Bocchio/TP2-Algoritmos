@@ -135,7 +135,7 @@ status_t ADT_Vector_export_as_xml(const ADT_Vector_t *vector, void *_ctx, FILE *
 
 	/* Export each element */
 	for(i = 0; i < vector->len; i++){
-		if((st = vector->export_element_as_xml(vector->elements[i], &element_ctx, fo)) != OK)
+		if((st = (*(vector->export_element_as_xml))(vector->elements[i], &element_ctx, fo)) != OK)
 			return st;
 	}
 

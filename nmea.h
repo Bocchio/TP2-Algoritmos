@@ -63,6 +63,8 @@ status_t export_NMEA(const ADT_Vector_t *vector, file_format_t format, FILE *fo)
 
 status_t ADT_NMEA_GGA_new(ADT_NMEA_GGA_t **gga_node, string *fields);
 status_t ADT_NMEA_GGA_delete(ADT_NMEA_GGA_t **gga_node);
-status_t ADT_NMEA_GGA_export_as_kml(ADT_NMEA_GGA_t *nmea_gga_node, void *ctx, FILE *fo);
+status_t ADT_NMEA_GGA_export_as_kml(const ADT_NMEA_GGA_t *gga_node, void *ctx, FILE *fo);
+status_t ADT_NMEA_GGA_export_as_csv(const ADT_NMEA_GGA_t *gga_node, void *ctx, FILE *fo);
+
 
 #endif
