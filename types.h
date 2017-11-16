@@ -6,6 +6,10 @@ typedef enum {
 	ERROR_NULL_POINTER,
 	ERROR_MEMORY,
 	ERROR_OPENING_FILE,
+	ERROR_READING_FILE,
+	ERROR_WRITING_FILE,
+	ERROR_PROGRAM_INVOCATION,
+	ERROR_INVALID_FUNCTION_ARGS,
 	ERROR_UNKNOWN_FILE_FORMAT
 } status_t;
 
@@ -17,6 +21,7 @@ typedef enum {
 typedef unsigned char uchar;
 
 typedef char * string;
+typedef const char * const_string;
 
 typedef enum {
 	FORMAT_CSV,

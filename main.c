@@ -1,9 +1,11 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include "main.h"
 #include "types.h"
 #include "errors.h"
 #include "config.h"
+#include "utils.h"
 #include "vector.h"
 #include "nmea.h"
 
@@ -12,7 +14,7 @@ int main(int argc, char *argv[])
 	status_t st;
     config_t config;
     FILE *fi,*fo;
-    ADT_Vector_t *ADT_vector;
+    ADT_Vector_t *gga_vector;
 
     if((st = validate_arguments(argc, argv, &config)) != OK){
         show_error(st);
@@ -32,7 +34,7 @@ int main(int argc, char *argv[])
         return st;
     }
 
-    if((st = parse_NMEA_from_csv(fi, &ADT_vector)) != OK){
+    if((st = parse_NMEA(fi, &gga_vector)) != OK){
         fclose(fi);
         if(fclose(fo) == EOF)
             show_error(ERROR_WRITING_FILE);
@@ -40,7 +42,7 @@ int main(int argc, char *argv[])
         return st;
     }
 
-    if((st = export_NMEA(ADT_vector, config.file_format, fo)) != OK){
+    if((st = export_NMEA(gga_vector, config.file_format, fo)) != OK){
         fclose(fi);
         if(fclose(fo) == EOF)
             show_error(ERROR_WRITING_FILE);
@@ -65,10 +67,10 @@ status_t validate_arguments(int argc, char *argv[], config_t *config)
     /* parse each argument, takes into account that the last argument is positional */
     for(i = 1; i < MAX_ARGS-1; i += 2){
         if(!strcmp(argv[i], CMD_ARG_FILE_FORMAT_TOKEN)){
-            if(!strcmp(format_string, FILE_FORMAT_KML))
-                config->file_format = FORMAT_KML;
-            if(!strcmp(format_string, FILE_FORMAT_CSV))
+            if(!strcmp(argv[i], FILE_FORMAT_CSV_FLAG))
                 config->file_format = FORMAT_CSV;
+            if(!strcmp(argv[i], FILE_FORMAT_KML_FLAG))
+                config->file_format = FORMAT_KML;
             return ERROR_UNKNOWN_FILE_FORMAT;
         }
         else if(!strcmp(argv[i], CMD_ARG_OUTPUT_FILE_TOKEN)){

@@ -15,10 +15,6 @@ status_t ADT_Vector_new(ADT_Vector_t **vector, functions_interface_t *element_fu
 	(*vector)->elements = NULL;
 	(*vector)->len = 0;
 	(*vector)->alloc_size = 0;
-	(*vector)->element_label = NULL;
-
-	(*vector)->xml_header = NULL;
-	(*vector)->xml_footer = NULL;
 
 	(*vector)->delete_element = element_functions->destructor;
 	(*vector)->clone_element = element_functions->clonator;
@@ -88,7 +84,7 @@ void * ADT_Vector_get_element(const ADT_Vector_t *vector, size_t pos)
 	return vector->elements[pos];
 }
 
-status_t ADT_Vector_export_as_csv(ADT_Vector_t *vector, void *ctx, FILE *fo)
+status_t ADT_Vector_export_as_csv(const ADT_Vector_t *vector, void *ctx, FILE *fo)
 {
 	size_t i;
 	status_t st;
@@ -103,31 +99,31 @@ status_t ADT_Vector_export_as_csv(ADT_Vector_t *vector, void *ctx, FILE *fo)
 
 status_t ADT_Vector_export_as_xml(const ADT_Vector_t *vector, void *_ctx, FILE *fo)
 {
-	size_t i, j;
+	size_t i;
 	status_t st;
 	xml_ctx_t *ctx;
 	xml_ctx_t element_ctx;
 
-	if(vector == NULL || xml_ctx == NULL || fo == NULL)
+	if(vector == NULL || _ctx == NULL || fo == NULL)
 		return ERROR_NULL_POINTER;
 
 	ctx = (xml_ctx_t *) _ctx;
 
 	/* The xml context that each element of the vector will use */
-	element_ctx->print_header = FALSE;
-	element_ctx->previous_chunk = NULL;
-	element_ctx->next_chunk = NULL;
-	element_ctx->attributes = NULL;
-	element_ctx->label = NULL;
-	element_ctx->indentation = ctx->indentation + 1;
+	element_ctx.print_header = FALSE;
+	element_ctx.previous_chunk = NULL;
+	element_ctx.next_chunk = NULL;
+	element_ctx.attributes = NULL;
+	element_ctx.label = NULL;
+	element_ctx.indentation = ctx->indentation + 1;
 
 	if(ctx->print_header == TRUE){
 		if((st = xml_print_header(fo)) != OK)
 			return st;
 	}
 
-	if(cxt->previous_chunk != NULL){
-		if(fputs(vector->xml_before_chunk, fo) == EOF)
+	if(ctx->previous_chunk != NULL){
+		if(fputs(ctx->previous_chunk, fo) == EOF)
 			return ERROR_WRITING_FILE;
 	}
 

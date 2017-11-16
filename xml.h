@@ -15,7 +15,7 @@ typedef struct{
 } xml_ctx_t;
 
 status_t xml_print_header(FILE *output_file);
-status_t xml_open_tag(string label, string attributes, uchar tabs, FILE *output_file);
-status_t xml_close_tag(string label, uchar tabs, FILE *output_file);
+status_t xml_open_tag(const_string label, const_string attrib, uchar tabs, FILE *fo);
+status_t xml_close_tag(const_string label, uchar tabs, FILE *fo);
 
 #endif

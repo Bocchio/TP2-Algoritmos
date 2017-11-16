@@ -47,7 +47,7 @@ status_t readline(FILE *fi, string *s, bool_t *eof)
 	return OK;
 }
 
-status_t strdup(const string src, string *dest)
+status_t strdup(const_string src, string *dest)
 {
 	size_t i;
 	size_t len;
@@ -72,7 +72,7 @@ status_t strdup(const string src, string *dest)
    	   split("hello worldsepsep!!sep", &dest, "sep");
    would put {"hello world", "", "!!", "", NULL} inside dest
 */
-status_t split(const string src, string **dest, string delim)
+status_t split(const_string src, string **dest, string delim)
 {
 	status_t st;
 	size_t i, j;

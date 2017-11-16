@@ -11,7 +11,7 @@ typedef struct {
 	destructor_t destructor;
 	clonator_t clonator;
 	printer_t csv_exporter;
-	printer_t kml_exporter;
+	printer_t xml_exporter;
 } functions_interface_t;
 
 #endif

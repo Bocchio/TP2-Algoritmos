@@ -1,11 +1,11 @@
 CC = gcc
-CFLAGS = -ansi -Wall -pedantic-errors
+CFLAGS = -ansi -Wall -pedantic-errors -Wno-overlength-strings
 LANGUAGE = -DENGLISH
 OBJS = $(patsubst %.c,%.o,$(wildcard *.c))
 
 all: gpsviewer clean
 
-gpsviewer: main.o vector.o errors.o utils.o
+gpsviewer: main.o vector.o errors.o utils.o xml.o nmea.o
 	$(CC) $^ -o $@
 
 vector.o: vector.c
