@@ -78,21 +78,20 @@ status_t parse_NMEA(FILE *fi, ADT_Vector_t **gga_vector)
 
 status_t ADT_NMEA_GGA_new(ADT_NMEA_GGA_t **gga_node, string *fields)
 {
+	status_t st;
 	char *tmp;
 
 	if((*gga_node = (ADT_NMEA_GGA_t *) malloc(sizeof(ADT_NMEA_GGA_t))) == NULL)
 		return ERROR_MEMORY;
 
-	(*gga_node)->longitude = strtod(fields[GPGGA_LONGITUDE_POS], &tmp);
-	if(*tmp){
+	if((st = parse_NMEA_latlon(fields[GPGGA_LONGITUDE_POS], &((*gga_node)->longitude))) != OK){
 		ADT_NMEA_GGA_delete(gga_node);
-		return ERROR_READING_FILE;
+		return st;
 	}
 
-	(*gga_node)->latitude = strtod(fields[GPGGA_LATITUDE_POS], &tmp);
-	if(*tmp){
+	if((st = parse_NMEA_latlon(fields[GPGGA_LATITUDE_POS], &((*gga_node)->latitude))) != OK){
 		ADT_NMEA_GGA_delete(gga_node);
-		return ERROR_READING_FILE;
+		return st;
 	}
 
 	(*gga_node)->altitude = strtod(fields[GPGGA_ALTITUDE_POS], &tmp);
@@ -101,25 +100,31 @@ status_t ADT_NMEA_GGA_new(ADT_NMEA_GGA_t **gga_node, string *fields)
 		return ERROR_READING_FILE;
 	}
 
-	if((*gga_node)->longitude != 0){
+	if(*fields[GPGGA_LATITUDE_POS]){
+		(*gga_node)->has_coord = TRUE;
 		if(!strcmp(fields[GPGGA_NS_INDICATOR_POS], GPGGA_SOUTH_TOKEN)){
-			(*gga_node)->longitude *= -1;
-		}
-		else if(!strcmp(fields[GPGGA_NS_INDICATOR_POS], GPGGA_NORTH_TOKEN)){
-			ADT_NMEA_GGA_delete(gga_node);
-			return ERROR_READING_FILE;
-		}
-	}
-
-	if((*gga_node)->latitude != 0){
-		if(!strcmp(fields[GPGGA_EW_INDICATOR_POS], GPGGA_WEST_TOKEN)){
 			(*gga_node)->latitude *= -1;
 		}
-		else if(!strcmp(fields[GPGGA_EW_INDICATOR_POS], GPGGA_EAST_TOKEN)){
+		else if(strcmp(fields[GPGGA_NS_INDICATOR_POS], GPGGA_NORTH_TOKEN)){
 			ADT_NMEA_GGA_delete(gga_node);
 			return ERROR_READING_FILE;
 		}
 	}
+	else
+		(*gga_node)->has_coord = FALSE;
+
+	if(*fields[GPGGA_LONGITUDE_POS]){
+		(*gga_node)->has_coord = TRUE;
+		if(!strcmp(fields[GPGGA_EW_INDICATOR_POS], GPGGA_WEST_TOKEN)){
+			(*gga_node)->longitude *= -1;
+		}
+		else if(strcmp(fields[GPGGA_EW_INDICATOR_POS], GPGGA_EAST_TOKEN)){
+			ADT_NMEA_GGA_delete(gga_node);
+			return ERROR_READING_FILE;
+		}
+	}
+	else
+		(*gga_node)->has_coord = FALSE;
 
 	return OK;
 
@@ -141,6 +146,9 @@ status_t ADT_NMEA_GGA_export_as_kml(const ADT_NMEA_GGA_t *gga, void *_ctx, FILE 
 	if(gga == NULL || _ctx == NULL || fo == NULL)
 		return ERROR_NULL_POINTER;
 	
+	if(gga->has_coord == FALSE)
+		return OK;
+
 	ctx = (xml_ctx_t *) _ctx;
 
 	/* Tabulate */
@@ -149,7 +157,7 @@ status_t ADT_NMEA_GGA_export_as_kml(const ADT_NMEA_GGA_t *gga, void *_ctx, FILE 
 			return ERROR_WRITING_FILE;
 	}
 	/* Print the data */
-	if(fprintf(fo, "%f%c%f%c%f\n", gga->latitude, ',', gga->longitude, ',', gga->altitude) < 0)
+	if(fprintf(fo, "%f%c%f%c%i\n", gga->longitude, ',', gga->latitude, ',', (int) gga->altitude) < 0)
 		return ERROR_WRITING_FILE;
 
 	return OK;
@@ -163,7 +171,7 @@ status_t ADT_NMEA_GGA_export_as_csv(const ADT_NMEA_GGA_t *gga, void *ctx, FILE *
 		return ERROR_NULL_POINTER;
 	
 	delim = ctx;
-	if(fprintf(fo, "%f%s%f%s%f\n", gga->latitude, delim, gga->longitude, delim, gga->altitude) < 0)
+	if(fprintf(fo, "%f%s%f%s%i\n", gga->longitude, delim, gga->latitude, delim, (int) gga->altitude) < 0)
 		return ERROR_WRITING_FILE;
 
 	return OK;
@@ -180,6 +188,35 @@ status_t export_NMEA(const ADT_Vector_t *vector, file_format_t format, FILE *fo)
 	ctx = context_lookup_table[format];
 	if((st = export_lookup_table[format](vector, ctx, fo)) != OK)
 		return st;
+
+	return OK;
+}
+
+
+status_t parse_NMEA_latlon(string coord, double *degrees)
+{
+	char *tmp;
+	char *minutes_pos;
+
+	*degrees = 0;
+
+	if((minutes_pos = strchr(coord, '.')) == NULL){
+		/* if coord is not "" then the file is corrupt*/
+		if(*coord)
+			return ERROR_READING_FILE;
+		else
+			return OK;
+	}
+	minutes_pos -= 2;
+	/* 60 minutes in a degree */
+	*degrees += strtod(minutes_pos, &tmp)/60.0;
+	if(*tmp)
+		return ERROR_READING_FILE;
+
+	*minutes_pos = '\0';
+	*degrees += strtod(coord, &tmp);
+	if(*tmp)
+		return ERROR_READING_FILE;
 
 	return OK;
 }

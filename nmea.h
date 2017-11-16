@@ -31,6 +31,7 @@
 				<altitudeMode>absolute</altitudeMode>\n"
 
 #define KML_FOOTER "\
+			</LineString>\n\
 		</Placemark>\n\
 	</Document>\n\
 </kml>"
@@ -45,8 +46,8 @@
 #define GPGGA_EAST_TOKEN	"E"
 #define GPGGA_WEST_TOKEN	"W"
 
-#define GPGGA_NS_INDICATOR_POS	3
 #define GPGGA_EW_INDICATOR_POS	5
+#define GPGGA_NS_INDICATOR_POS	3
 
 #define GPGGA_LATITUDE_POS		2
 #define GPGGA_LONGITUDE_POS		4
@@ -56,10 +57,12 @@ typedef struct{
 	double latitude;
 	double longitude;
 	double altitude;
+	bool_t has_coord;
 } ADT_NMEA_GGA_t;
 
 status_t parse_NMEA(FILE *fi, ADT_Vector_t **gga);
 status_t export_NMEA(const ADT_Vector_t *vector, file_format_t format, FILE *fo);
+status_t parse_NMEA_latlon(string coord, double *degrees);
 
 status_t ADT_NMEA_GGA_new(ADT_NMEA_GGA_t **gga_node, string *fields);
 status_t ADT_NMEA_GGA_delete(ADT_NMEA_GGA_t **gga_node);

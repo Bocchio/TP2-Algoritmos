@@ -28,7 +28,7 @@ status_t xml_open_tag(const_string label, const_string attrib, uchar tabs, FILE 
 			return ERROR_WRITING_FILE;
 	}
 
-	if(fprintf(fo, "%s %s %s %s\n", "<", label, attrib, ">") < 0)
+	if(fprintf(fo, "%s%s%s%s\n", "<", label, attrib, ">") < 0)
 		return ERROR_WRITING_FILE;
 
 	return OK;
@@ -43,7 +43,7 @@ status_t xml_close_tag(const_string label, uchar tabs, FILE *fo)
 			return ERROR_WRITING_FILE;
 	}
 	
-	if(fprintf(fo, "%s%s %s\n", "</", label, ">") < 0)
+	if(fprintf(fo, "%s%s%s\n", "</", label, ">") < 0)
 		return ERROR_WRITING_FILE;
 
 	return OK;

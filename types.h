@@ -19,7 +19,7 @@ typedef enum {
 } bool_t;
 
 typedef unsigned char uchar;
-
+typedef unsigned int uint;
 typedef char * string;
 typedef const char * const_string;
 
