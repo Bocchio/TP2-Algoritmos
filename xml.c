@@ -1,3 +1,7 @@
+#include <stdio.h>
+#include "types.h"
+#include "xml.h"
+
 status_t xml_print_header(FILE *output_file)
 {
 	if(fputs(XML_HEADER, output_file) == EOF)
@@ -6,37 +10,40 @@ status_t xml_print_header(FILE *output_file)
 	return OK;
 }
 
-status_t xml_open_tag(const string label, const string attributes, size_t tabs, FILE *output_file)
+status_t xml_open_tag(const string label, const string attrib, uchar tabs, FILE *fo)
 {
-	size_t i;
+	uchar i;
 
-	if(label == NULL || output_file == NULL)
+	if(label == NULL || fo == NULL)
 		return ERROR_NULL_POINTER;
 
-	if(attributes == NULL)
-		attributes = "";
+	if(!*label)
+		return ERROR_INVALID_FUNCTION_ARGS;
+
+	if(attrib == NULL)
+		attrib = "";
 
 	for(i = 0; i < tabs; i++){
 		if(putc('\t') == EOF)
 			return ERROR_WRITING_FILE;
 	}
 
-	if(fprintf(output_file, "%s %s %s", "<", label, attributes, ">") < 0)
+	if(fprintf(fo, "%s %s %s", "<", label, attrib, ">") < 0)
 		return ERROR_WRITING_FILE;
 
 	return OK;
 }
 
-status_t xml_close_tag(string label, size_t tabs, FILE *output_file)
+status_t xml_close_tag(string label, uchar tabs, FILE *fo)
 {
-	size_t i;
+	uchar i;
 
 	for(i = 0; i < tabs; i++){
 		if(putc('\t') == EOF)
 			return ERROR_WRITING_FILE;
 	}
 	
-	if(fprintf(output_file, "%s%s %s", "</", label, ">") < 0)
+	if(fprintf(fo, "%s%s %s", "</", label, ">") < 0)
 		return ERROR_WRITING_FILE;
 
 	return OK;

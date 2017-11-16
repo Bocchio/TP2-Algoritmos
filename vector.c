@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include "vector.h"
 #include "utils.h"
+#include "xml.h"
 
 status_t ADT_Vector_new(ADT_Vector_t **vector, functions_interface_t *element_functions)
 {
@@ -99,77 +100,57 @@ status_t ADT_Vector_export_as_csv(ADT_Vector_t *vector, void *ctx, FILE *output_
 	return OK;
 }
 
-status_t ADT_Vector_export_as_xml(ADT_Vector_t *vector, void *tabs, FILE *output_file)
+status_t ADT_Vector_export_as_xml(ADT_Vector_t *vector, void *xml_ctx, FILE *fo)
 {
 	size_t i, j;
 	status_t st;
+	xml_ctx_t *ctx;
+	xml_ctx_t element_ctx;
 
-	if(vector == NULL || output_file == NULL)
+	if(vector == NULL || xml_ctx == NULL || fo == NULL)
 		return ERROR_NULL_POINTER;
 
-	if((st = xml_print_header(output_file)) != OK)
-		return st;
+	ctx = (xml_ctx_t *) xml_ctx;
+	/* The xml context that each element of the vector will use */
+	element_ctx->print_header = FALSE;
+	element_ctx->previous_chunk = NULL;
+	element_ctx->next_chunk = NULL;
+	element_ctx->attributes = NULL;
+	element_ctx->label = NULL;
+	element_ctx->indentation = ctx->indentation + 1;
 
-	if((st = xml_open_tag(output_file)) != OK)
-		return st;
+	if(ctx->print_header == TRUE){
+		if((st = xml_print_header(fo)) != OK)
+			return st;
+	}
 
-	if(vector->xml_before_chunk != NULL){
-		if(fputs(vector->xml_before_chunk, output_file) == EOF)
+	if(cxt->previous_chunk != NULL){
+		if(fputs(vector->xml_before_chunk, fo) == EOF)
 			return ERROR_WRITING_FILE;
 	}
 
-	if(vector->label != NULL){
-		if((st = xml_open_tag(vector->label, NULL, *(size_t *) tabs, output_file)) != OK)
+	/* If the label is not NULL nor "" */
+	if((ctx->label != NULL) && *(ctx->label)){
+		if((st = xml_open_tag(ctx->label, ctx->attributes, ctx->indentation, fo)) != OK)
 			return st;
 	}
 
 	/* Export each element */
-	(*(uchar *) tabs)++;
 	for(i = 0; i < vector->len; i++){
-		if((st = vector->export_element_as_xml(vector->elements[i], tabs, output_file))!=OK)
-			return st;
-	}
-	(*(size_t) tabs)--;
-
-	if(vector->label != NULL){
-		if((st = xml_close_tag(vector->label, *(size_t *) tabs, output_file)) != OK)
+		if((st = vector->export_element_as_xml(vector->elements[i], &element_ctx, fo)) != OK)
 			return st;
 	}
 
-	if(vector->xml_after_chunk != NULL){
-		if(fputs(vector->xml_after_chunk, output_file) == EOF)
+	/* Same as before */
+	if((ctx->label != NULL) && *(ctx->label)){
+		if((st = xml_close_tag(ctx->label, ctx->indentation, fo)) != OK)
+			return st;
+	}
+
+	if(ctx->next_chunk != NULL){
+		if(fputs(ctx->next_chunk, fo) == EOF)
 			return ERROR_WRITING_FILE;
 	}
-
-	return OK;
-}
-
-status_t ADT_Vector_set_xml_label(ADT_Vector_t *vector, const string label)
-{
-	status_t st;
-
-	if((st = strdup(label, vector->xml_label)) != OK)
-		return st;
-
-	return OK;
-}
-
-status_t ADT_Vector_set_xml_before_chunk(ADT_Vector_t *vector, const string xml_before)
-{
-	status_t st;
-
-	if((st = strdup(xml_before, vector->xml_before)) != OK)
-		return st;
-
-	return OK;
-}
-
-status_t ADT_Vector_set_xml_after_chunk(ADT_Vector_t *vector, const string xml_after_chunk)
-{
-	status_t st;
-
-	if((st = strdup(xml_after, vector->xml_after_chunk)) != OK)
-		return st;
 
 	return OK;
 }
