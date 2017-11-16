@@ -88,19 +88,20 @@ void * ADT_Vector_get_element(const ADT_Vector_t *vector, size_t pos)
 	return vector->elements[pos];
 }
 
-status_t ADT_Vector_export_as_csv(ADT_Vector_t *vector, void *ctx, FILE *output_file)
+status_t ADT_Vector_export_as_csv(ADT_Vector_t *vector, void *ctx, FILE *fo)
 {
 	size_t i;
 	status_t st;
 
 	for(i=0;i<vector->len;i++){
-		if((st=vector->export_element_as_csv(vector->elements[i],ctx,output_file))!=OK)
+		if((st = vector->export_element_as_csv(vector->elements[i], ctx, fo)) != OK)
 			return st;
 	}
+
 	return OK;
 }
 
-status_t ADT_Vector_export_as_xml(ADT_Vector_t *vector, void *xml_ctx, FILE *fo)
+status_t ADT_Vector_export_as_xml(const ADT_Vector_t *vector, void *_ctx, FILE *fo)
 {
 	size_t i, j;
 	status_t st;
@@ -110,7 +111,8 @@ status_t ADT_Vector_export_as_xml(ADT_Vector_t *vector, void *xml_ctx, FILE *fo)
 	if(vector == NULL || xml_ctx == NULL || fo == NULL)
 		return ERROR_NULL_POINTER;
 
-	ctx = (xml_ctx_t *) xml_ctx;
+	ctx = (xml_ctx_t *) _ctx;
+
 	/* The xml context that each element of the vector will use */
 	element_ctx->print_header = FALSE;
 	element_ctx->previous_chunk = NULL;

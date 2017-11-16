@@ -1,4 +1,4 @@
- CC = gcc
+CC = gcc
 CFLAGS = -ansi -Wall -pedantic-errors
 LANGUAGE = -DENGLISH
 OBJS = $(patsubst %.c,%.o,$(wildcard *.c))
@@ -15,6 +15,12 @@ utils.o: utils.c
 	$(CC) -c $(CFLAGS) $(LANGUAGE) -o $@ $<
 
 errors.o: errors.c
+	$(CC) -c $(CFLAGS) $(LANGUAGE) -o $@ $<
+
+nmea.o: nmea.c
+	$(CC) -c $(CFLAGS) $(LANGUAGE) -o $@ $<
+
+xml.o: xml.c
 	$(CC) -c $(CFLAGS) $(LANGUAGE) -o $@ $<
 
 main.o: main.c

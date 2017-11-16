@@ -6,10 +6,6 @@
 #include "adt.h"
 #include "vector.h"
 
-
-#define FILE_FORMAT_CSV		"csv"
-#define FILE_FORMAT_KML		"kml"
-
 #define GPGA_HEADER	"$GPGGA"
 
 #define KML_HEADER "\
@@ -40,12 +36,10 @@
 	</Document>\n\
 </kml>"
 
-#define NMEA_GGA_LABEL	"coordinates"
+#define NMEA_GGA_LABEL			"coordinates"
+#define NMEA_CSV_DELIMITER		","
 
-typedef enum {
-	FORMAT_KML,
-	FORMAT_CSV
-} file_format_t;
+#define OUTPUT_CSV_DELIMITER	"|"
 
 typedef struct{
 	double latitude;
@@ -54,11 +48,10 @@ typedef struct{
 } ADT_NMEA_GGA_t;
 
 status_t parse_NMEA_from_csv(FILE *fi, ADT_Vector_t *gga, string delimiter);
-status_t parse_file_format(const string, file_format_t *);
-status_t export_NMEA(const ADT_Vector_t *vector, file_format_t format);
+status_t export_NMEA(const ADT_Vector_t *vector, file_format_t format, FILE *fo);
 
 status_t ADT_NMEA_GGA_new(ADT_NMEA_GGA_t **nmea_gga_node, string *fields);
 status_t ADT_NMEA_GGA_delete(ADT_NMEA_GGA_t **nmea_gga_node);
-status_t ADT_NMEA_GGA_export_as_kml(ADT_NMEA_GGA_t *nmea_gga_node, void *tabs, FILE *fo);
+status_t ADT_NMEA_GGA_export_as_kml(ADT_NMEA_GGA_t *nmea_gga_node, void *ctx, FILE *fo);
 
 #endif

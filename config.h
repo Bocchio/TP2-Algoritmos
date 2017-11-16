@@ -1,11 +1,12 @@
 #ifndef CONFIG__H
 #define CONFIG__H
 
-typedef struct 
-{
-	string file_input;
-	string file_output;
-	file_format_t format;
-}config_t;
+#include "types.h"
+
+typedef struct{
+	string fi_path;
+	string fo_path;
+	file_format_t file_format;
+} config_t;
 
 #endif

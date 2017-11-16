@@ -18,4 +18,9 @@ typedef unsigned char uchar;
 
 typedef char * string;
 
+typedef enum {
+	FORMAT_CSV,
+	FORMAT_KML
+} file_format_t;
+
 #endif 

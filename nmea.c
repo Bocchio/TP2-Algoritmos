@@ -3,8 +3,32 @@
 #include <string.h>
 #include "vector.h"
 #include "nmea.h"
+#include "adt.h"
 
-status_t parse_NMEA_from_csv(FILE *fi, ADT_Vector_t **gga_vector, string delimiter)
+/* kml context for the export functions */
+xml_ctx_t kml_ctx = {
+	TRUE, /* print the xml header */
+	KML_HEADER, /* open the kml file */
+	KML_FOOTER, /* close the kml file */
+	NULL, /* no attributes */
+	NMEA_GGA_LABEL, /* label of the GGA information */
+	4 /* tabs of indentation */
+};
+
+/* Context for the export functions, corresponds with file_format_t */
+void * context_lookup_table = {
+	OUTPUT_CSV_DELIMITER,
+	&kml_ctx
+};
+
+/* Dispatch table that corresponds with file_format_t */
+printer_t export_lookup_table[] = {
+	&ADT_Vector_export_as_csv,
+	&ADT_Vector_export_as_xml
+};
+
+
+status_t parse_NMEA_from_csv(FILE *fi, ADT_Vector_t **gga_vector)
 {
 	status_t st;
 	size_t i;
@@ -27,7 +51,7 @@ status_t parse_NMEA_from_csv(FILE *fi, ADT_Vector_t **gga_vector, string delimit
 		if((st = readline(fi, &line, &eof)) != OK){
 			return st;
 		}
-		if((st = split(line, &fields, delimiter)) != OK){
+		if((st = split(line, &fields, NMEA_CSV_DELIMITER)) != OK){
 			return st;
 		}
 		free(line);
@@ -49,34 +73,52 @@ status_t parse_NMEA_from_csv(FILE *fi, ADT_Vector_t **gga_vector, string delimit
 	return OK;
 }
 
-status_t parse_file_format(const string *format_string, file_format_t *file_format)
-{
-	if(!strcmp(format_string, FILE_FORMAT_KML)){
-		*file_format = FORMAT_KML;
-		return OK;
-	}
-	if(!strcmp(format_string, FILE_FORMAT_CSV)){
-		*file_format = FORMAT_CSV;
-		return OK;
-	}
-
-	return ERROR_UNKNOWN_FILE_FORMAT;
-}
-
-status_t ADT_NMEA_GGA_export_as_kml(ADT_NMEA_GGA_t *gga, void *tabs, FILE *fo)
+status_t ADT_NMEA_GGA_export_as_kml(ADT_NMEA_GGA_t *gga, void *xml_ctx, FILE *fo)
 {
 	size_t i;
+	xml_ctx_t *ctx;
 
-	if(fo == NULL || tabs == NULL || gga == NULL)
+	if(gga == NULL || ctx == NULL || fo == NULL)
 		return ERROR_NULL_POINTER;
 	
+	ctx = (xml_ctx_t *) xml_ctx;
+
 	/* Tabulate */
-	for(i = 0; i < *(size_t *)tabs; i++){
+	for(i = 0; i < *(uchar *)tabs; i++){
 		if(fputc('\t', fo) == EOF)
 			return ERROR_WRITING_FILE;
 	}
 	/* Print the data */
-	if(fprintf(fo, "%f%d%f%c%f", gga->latitude, ',', gga->longitude, ',', gga->altitude) < 0)
+	if(fprintf(fo, "%f%c%f%c%f", gga->latitude, ',', gga->longitude, ',', gga->altitude) < 0)
+		return st;
+
+	return OK;
+}
+
+status_t ADT_NMEA_GGA_export_as_csv(ADT_NMEA_GGA_t *gga, void *ctx, FILE *fo)
+{
+	size_t i;
+	string delim;
+
+	if(gga == NULL || ctx == NULL || fo == NULL)
+		return ERROR_NULL_POINTER;
+	
+	delim = ctx;
+	if(fprintf(fo, "%f%s%f%s%f", gga->latitude, delim, gga->longitude, delim, gga->altitude) < 0)
+		return st;
+
+	return OK;
+}
+
+status_t export_NMEA(const ADT_Vector_t *vector, file_format_t format, FILE *fo)
+{
+	void *ctx;
+
+	if(vector == NULL)
+		return ERROR_NULL_POINTER;
+
+	ctx = context_lookup_table[format];
+	if((st = export_lookup_table[format](vector, ctx, fo)) != OK)
 		return st;
 
 	return OK;
