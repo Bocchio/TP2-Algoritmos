@@ -37,14 +37,8 @@ status_t parse_NMEA(FILE *fi, ADT_Vector_t **gga_vector)
 	string line;
 	string *fields;
 	ADT_NMEA_GGA_t *node;
-	functions_interface_t gga_functions;
 
-	gga_functions.destructor = (destructor_t) &ADT_NMEA_GGA_delete;
-	gga_functions.clonator = (clonator_t) NULL;
-	gga_functions.csv_exporter = (printer_t) &ADT_NMEA_GGA_export_as_csv;
-	gga_functions.xml_exporter = (printer_t) &ADT_NMEA_GGA_export_as_kml;
-
-	if((st = ADT_Vector_new(gga_vector, &gga_functions)) != OK){
+	if((st = ADT_Vector_new(gga_vector)) != OK){
 		return st;
 	}
 
