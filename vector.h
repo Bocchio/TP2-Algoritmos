@@ -16,7 +16,7 @@ typedef struct {
 	printer_t export_element_as_xml;
 } ADT_Vector_t;
 
-status_t ADT_Vector_new(ADT_Vector_t **vector, functions_interface_t *element_functions);
+status_t ADT_Vector_new(ADT_Vector_t **vector);
 status_t ADT_Vector_delete(ADT_Vector_t **vector);
 status_t ADT_Vector_append(ADT_Vector_t *vector, void *new_item);
 status_t ADT_Vector_export_as_csv(const ADT_Vector_t *vector, void *ctx, FILE *fo);
