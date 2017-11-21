@@ -11,7 +11,14 @@ status_t ADT_Vector_new(ADT_Vector_t **vector)
 
 	if((*vector = (ADT_Vector_t *) malloc(sizeof(ADT_Vector_t))) == NULL)
 		return ERROR_MEMORY;
-
+	if((*vector)->elements=(void **)malloc(sizeof(void *)*INIT_CHOP))==NULL){
+		free(*vector);
+		*vector=NULL;
+		return ERROR_MEMORY;
+	}
+	(*vector)->alloc_size=INIT_CHOP;
+	(*vector)->elements=NULL;
+	(*vector)->len=0;
 	(*vector)->delete_element = NULL;
 	(*vector)->clone_element = NULL;
 	(*vector)->export_element_as_csv = NULL;
