@@ -4,7 +4,7 @@
 #include "utils.h"
 #include "xml.h"
 
-status_t ADT_Vector_new(ADT_Vector_t **vector, functions_interface_t *element_functions)
+status_t ADT_Vector_new(ADT_Vector_t **vector)
 {
 	if(vector == NULL)
 		return ERROR_NULL_POINTER;
@@ -12,14 +12,10 @@ status_t ADT_Vector_new(ADT_Vector_t **vector, functions_interface_t *element_fu
 	if((*vector = (ADT_Vector_t *) malloc(sizeof(ADT_Vector_t))) == NULL)
 		return ERROR_MEMORY;
 
-	(*vector)->elements = NULL;
-	(*vector)->len = 0;
-	(*vector)->alloc_size = 0;
-
-	(*vector)->delete_element = element_functions->destructor;
-	(*vector)->clone_element = element_functions->clonator;
-	(*vector)->export_element_as_csv = element_functions->csv_exporter;
-	(*vector)->export_element_as_xml = element_functions->xml_exporter;
+	(*vector)->delete_element = NULL;
+	(*vector)->clone_element = NULL;
+	(*vector)->export_element_as_csv = NULL;
+	(*vector)->export_element_as_xml = NULL;
 
 	return OK;
 }
