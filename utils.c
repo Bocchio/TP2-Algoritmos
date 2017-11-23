@@ -10,7 +10,7 @@ status_t readline(FILE *fi, string *s, bool_t *eof)
 	string aux;
 	int c;
 	
-	if(s == NULL || eof == NULL)
+	if(fi == NULL || s == NULL || eof == NULL)
 		return ERROR_NULL_POINTER;
 
 	if((*s = malloc(INIT_CHOP*sizeof(char))) == NULL)
@@ -47,7 +47,49 @@ status_t readline(FILE *fi, string *s, bool_t *eof)
 	return OK;
 }
 
-status_t strdup(const_string src, string *dest)
+status_t readfile(FILE *fi, string *s)
+{
+	size_t alloc_size;
+	size_t len;
+	string aux;
+	int c;
+	
+	if(fi == NULL || s == NULL)
+		return ERROR_NULL_POINTER;
+
+	if((*s = malloc(INIT_CHOP*sizeof(char))) == NULL)
+		return ERROR_MEMORY;
+
+	alloc_size = INIT_CHOP;
+	len = 0;
+
+	while((c = fgetc(fi)) != EOF){
+		/* Check if we need more space taking into account the future NUL terminator */
+		if(len == alloc_size - 1){
+			if((aux = realloc(*s, (alloc_size + CHOP_SIZE)*sizeof(char))) == NULL){
+				free(*s);
+				return ERROR_MEMORY;
+			}
+			alloc_size += CHOP_SIZE;
+			*s = aux;
+		}
+		(*s)[len++] = c;
+	}
+	(*s)[len] = '\0';
+
+	/* Free unused memory */
+	if(len + 1 < alloc_size){
+		if((aux = realloc(*s, (len + 1)*sizeof(char))) == NULL){
+			free(*s);
+			return ERROR_MEMORY;
+		}
+		*s = aux;
+	}
+	
+	return OK;
+}
+
+status_t strdup(const char *src, char **dest)
 {
 	size_t i;
 	size_t len;
@@ -72,15 +114,15 @@ status_t strdup(const_string src, string *dest)
    	   split("hello worldsepsep!!sep", &dest, "sep");
    would put {"hello world", "", "!!", "", NULL} inside dest
 */
-status_t split(const_string src, string **dest, string delim)
+status_t split(const char * src, char ***dest, char *delim)
 {
 	status_t st;
 	size_t i, j;
 	size_t substrings;
 	size_t delim_len;
 	bool_t found_delim;
-	string copy;
-	string aux;
+	char * copy;
+	char * aux;
 
 	if((st = strdup(src, &copy)) != OK){
 		return st;
@@ -108,7 +150,7 @@ status_t split(const_string src, string **dest, string delim)
 	}
 
 	/* Take into account the the NULL pointer at the end */
-	if((*dest = (string *) malloc((substrings + 1)*sizeof(string))) == NULL)
+	if((*dest = (char **) malloc((substrings + 1)*sizeof(char *))) == NULL)
 		return ERROR_MEMORY;
 
 	/* Copy each substring into the array of strings */

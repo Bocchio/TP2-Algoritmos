@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<kml xmlns=\"http://www.opengis.net/kml/2.2\">
+<kml xmlns="http://www.opengis.net/kml/2.2">
 	<Document>
 		<name>Rutas</name>
 		<description>Ejemplos de rutas</description>
-		<Style id=\"yellowLineGreenPoly\">
+		<Style id="yellowLineGreenPoly">
 			<LineStyle>
 				<color>7f00ffff</color>
 				<width>4</width>

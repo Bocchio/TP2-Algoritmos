@@ -3,6 +3,7 @@
 
 #include "types.h"
 
+#define ADT_Vector_INIT_CHOP	15
 #define ADT_Vector_CHOP_SIZE	20
 
 typedef struct {
@@ -23,9 +24,10 @@ status_t ADT_Vector_export_as_csv(const ADT_Vector_t *vector, void *ctx, FILE *f
 status_t ADT_Vector_export_as_kml(const ADT_Vector_t *vector, void *ctx, FILE *fo);
 void * ADT_Vector_get_element(const ADT_Vector_t *vector, size_t pos);
 
-status_t set_destructor(ADT_Vector_t *vector, destructor_t destructor);
-status_t set_clonator(ADT_Vector_t *vector, clonator_t clonator);
-status_t set_csv_exporter(ADT_Vector_t *vector, printer_t csv_exporter);
-status_t set_kml_exporter(ADT_Vector_t *vector, printer_t kml_exporter);
+status_t ADT_Vector_set_destructor(ADT_Vector_t *vector, destructor_t destructor);
+status_t ADT_Vector_set_clonator(ADT_Vector_t *vector, clonator_t clonator);
+status_t ADT_Vector_set_csv_exporter(ADT_Vector_t *vector, printer_t csv_exporter);
+status_t ADT_Vector_set_kml_exporter(ADT_Vector_t *vector, printer_t kml_exporter);
+status_t ADT_Vector_set_label(ADT_Vector_t *vector, string label);
 
 #endif

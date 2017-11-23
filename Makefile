@@ -5,7 +5,7 @@ OBJS = $(patsubst %.c,%.o,$(wildcard *.c))
 
 all: gpsviewer clean
 
-gpsviewer: main.o vector.o errors.o utils.o xml.o nmea.o
+gpsviewer: main.o vector.o errors.o utils.o nmea.o
 	$(CC) $^ -o $@
 
 vector.o: vector.c
@@ -18,9 +18,6 @@ errors.o: errors.c
 	$(CC) -c $(CFLAGS) $(LANGUAGE) -o $@ $<
 
 nmea.o: nmea.c
-	$(CC) -c $(CFLAGS) $(LANGUAGE) -o $@ $<
-
-xml.o: xml.c
 	$(CC) -c $(CFLAGS) $(LANGUAGE) -o $@ $<
 
 main.o: main.c

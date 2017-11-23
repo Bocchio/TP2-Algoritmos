@@ -21,7 +21,6 @@ typedef enum {
 typedef unsigned char uchar;
 typedef unsigned int uint;
 typedef char * string;
-typedef const char * const_string;
 
 typedef enum {
 	FORMAT_CSV,
@@ -31,5 +30,12 @@ typedef enum {
 typedef status_t (*destructor_t)(void **);
 typedef void * (*clonator_t)(const void *);
 typedef status_t (*printer_t)(const void *, void *ctx, FILE *fo);
+typedef status_t (*creator_t)(void **);
+
+typedef struct{
+	string header;
+	string footer;
+	uchar indentation;
+} xml_ctx_t;
 
 #endif 

@@ -10,13 +10,13 @@ status_t ADT_Vector_new(ADT_Vector_t **vector)
 
 	if((*vector = (ADT_Vector_t *) malloc(sizeof(ADT_Vector_t))) == NULL)
 		return ERROR_MEMORY;
-	if((*vector)->elements=(void **)malloc(sizeof(void *)*INIT_CHOP))==NULL){
+
+	if(((*vector)->elements=(void **)malloc(sizeof(void *)*ADT_Vector_INIT_CHOP))==NULL){
 		free(*vector);
 		*vector=NULL;
 		return ERROR_MEMORY;
 	}
-	(*vector)->alloc_size = INIT_CHOP;
-	(*vector)->elements = NULL;
+	(*vector)->alloc_size = ADT_Vector_INIT_CHOP;
 	(*vector)->len = 0;
 	(*vector)->label = "";
 	(*vector)->delete_element = NULL;
@@ -35,9 +35,11 @@ status_t ADT_Vector_delete(ADT_Vector_t **vector)
 	if(vector == NULL)
 		return ERROR_NULL_POINTER;
 
-	for(i = 0; i < (*vector)->len; i++){
-		if((st = (*vector)->delete_element((*vector)->elements + i)) != OK)
-			return st;
+	if((*vector)->delete_element != NULL){
+		for(i = 0; i < (*vector)->len; i++){
+			if((st = (*vector)->delete_element((*vector)->elements + i)) != OK)
+				return st;
+		}
 	}
 	
 	free((*vector)->elements);
@@ -103,6 +105,7 @@ status_t ADT_Vector_export_as_csv(const ADT_Vector_t *vector, void *ctx, FILE *f
 status_t ADT_Vector_export_as_kml(const ADT_Vector_t *vector, void *_ctx, FILE *fo)
 {
 	size_t i;
+	uchar j;
 	status_t st;
 	xml_ctx_t *ctx;
 	xml_ctx_t element_ctx;
@@ -121,7 +124,10 @@ status_t ADT_Vector_export_as_kml(const ADT_Vector_t *vector, void *_ctx, FILE *
 		return ERROR_WRITING_FILE;
 
 	/* open the vectors tag */
-	if(fprintf("%c%s%c\n", '<', vector->label, '>') < 0)
+	for(j = 0; j < ctx->indentation; j++)
+		if(fputc('\t', fo) == EOF)
+			return ERROR_WRITING_FILE;
+	if(fprintf(fo, "%c%s%c\n", '<', vector->label, '>') < 0)
 		return ERROR_WRITING_FILE;
 
 	/* Export each element */
@@ -131,7 +137,10 @@ status_t ADT_Vector_export_as_kml(const ADT_Vector_t *vector, void *_ctx, FILE *
 	}
 
 	/* closes the vectors tag */
-	if(fprintf("%s%s%c\n", "</", vector->label, '>') < 0)
+	for(j = 0; j < ctx->indentation; j++)
+		if(fputc('\t', fo) == EOF)
+			return ERROR_WRITING_FILE;
+	if(fprintf(fo, "%s%s%c\n", "</", vector->label, '>') < 0)
 		return ERROR_WRITING_FILE;
 
 	if(fputs(ctx->footer, fo) == EOF)
@@ -140,7 +149,17 @@ status_t ADT_Vector_export_as_kml(const ADT_Vector_t *vector, void *_ctx, FILE *
 	return OK;
 }
 
-status_t set_destructor(ADT_Vector_t *vector, destructor_t destructor)
+status_t ADT_Vector_set_label(ADT_Vector_t *vector, string label)
+{
+	if(vector == NULL || label == NULL)
+		return ERROR_NULL_POINTER;
+
+	vector->label = label;
+
+	return OK;
+}
+
+status_t ADT_Vector_set_destructor(ADT_Vector_t *vector, destructor_t destructor)
 {
 	if(vector == NULL)
 		return ERROR_NULL_POINTER;
@@ -150,7 +169,7 @@ status_t set_destructor(ADT_Vector_t *vector, destructor_t destructor)
 	return OK;
 }
 
-status_t set_clonator(ADT_Vector_t *vector, clonator_t clonator)
+status_t ADT_Vector_set_clonator(ADT_Vector_t *vector, clonator_t clonator)
 {
 	if(vector == NULL)
 		return ERROR_NULL_POINTER;
@@ -160,7 +179,7 @@ status_t set_clonator(ADT_Vector_t *vector, clonator_t clonator)
 	return OK;
 }
 
-status_t set_csv_exporter(ADT_Vector_t *vector, printer_t csv_exporter)
+status_t ADT_Vector_set_csv_exporter(ADT_Vector_t *vector, printer_t csv_exporter)
 {
 	if(vector == NULL)
 		return ERROR_NULL_POINTER;
@@ -170,7 +189,7 @@ status_t set_csv_exporter(ADT_Vector_t *vector, printer_t csv_exporter)
 	return OK;
 }
 
-status_t set_kml_exporter(ADT_Vector_t *vector, printer_t kml_exporter)
+status_t ADT_Vector_set_kml_exporter(ADT_Vector_t *vector, printer_t kml_exporter)
 {
 	if(vector == NULL)
 		return ERROR_NULL_POINTER;
