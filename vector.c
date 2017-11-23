@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #include "vector.h"
 #include "utils.h"
-#include "xml.h"
 
 status_t ADT_Vector_new(ADT_Vector_t **vector)
 {
@@ -16,13 +15,14 @@ status_t ADT_Vector_new(ADT_Vector_t **vector)
 		*vector=NULL;
 		return ERROR_MEMORY;
 	}
-	(*vector)->alloc_size=INIT_CHOP;
-	(*vector)->elements=NULL;
-	(*vector)->len=0;
+	(*vector)->alloc_size = INIT_CHOP;
+	(*vector)->elements = NULL;
+	(*vector)->len = 0;
+	(*vector)->label = "";
 	(*vector)->delete_element = NULL;
 	(*vector)->clone_element = NULL;
 	(*vector)->export_element_as_csv = NULL;
-	(*vector)->export_element_as_xml = NULL;
+	(*vector)->export_element_as_kml = NULL;
 
 	return OK;
 }
@@ -100,7 +100,7 @@ status_t ADT_Vector_export_as_csv(const ADT_Vector_t *vector, void *ctx, FILE *f
 	return OK;
 }
 
-status_t ADT_Vector_export_as_xml(const ADT_Vector_t *vector, void *_ctx, FILE *fo)
+status_t ADT_Vector_export_as_kml(const ADT_Vector_t *vector, void *_ctx, FILE *fo)
 {
 	size_t i;
 	status_t st;
@@ -112,46 +112,70 @@ status_t ADT_Vector_export_as_xml(const ADT_Vector_t *vector, void *_ctx, FILE *
 
 	ctx = (xml_ctx_t *) _ctx;
 
-	/* The xml context that each element of the vector will use */
-	element_ctx.print_header = FALSE;
-	element_ctx.previous_chunk = NULL;
-	element_ctx.next_chunk = NULL;
-	element_ctx.attributes = NULL;
-	element_ctx.label = NULL;
+	/* The kml context that each element of the vector will use */
+	element_ctx.header = "";
+	element_ctx.footer = "";
 	element_ctx.indentation = ctx->indentation + 1;
 
-	if(ctx->print_header == TRUE){
-		if((st = xml_print_header(fo)) != OK)
-			return st;
-	}
+	if(fputs(ctx->header, fo) == EOF)
+		return ERROR_WRITING_FILE;
 
-	if(ctx->previous_chunk != NULL){
-		if(fputs(ctx->previous_chunk, fo) == EOF)
-			return ERROR_WRITING_FILE;
-	}
-
-	/* If the label is not NULL nor "" */
-	if((ctx->label != NULL) && *(ctx->label)){
-		if((st = xml_open_tag(ctx->label, ctx->attributes, ctx->indentation, fo)) != OK)
-			return st;
-	}
+	/* open the vectors tag */
+	if(fprintf("%c%s%c\n", '<', vector->label, '>') < 0)
+		return ERROR_WRITING_FILE;
 
 	/* Export each element */
 	for(i = 0; i < vector->len; i++){
-		if((st = (*(vector->export_element_as_xml))(vector->elements[i], &element_ctx, fo)) != OK)
+		if((st = vector->export_element_as_kml(vector->elements[i], &element_ctx, fo)) != OK)
 			return st;
 	}
 
-	/* Same as before */
-	if((ctx->label != NULL) && *(ctx->label)){
-		if((st = xml_close_tag(ctx->label, ctx->indentation, fo)) != OK)
-			return st;
-	}
+	/* closes the vectors tag */
+	if(fprintf("%s%s%c\n", "</", vector->label, '>') < 0)
+		return ERROR_WRITING_FILE;
 
-	if(ctx->next_chunk != NULL){
-		if(fputs(ctx->next_chunk, fo) == EOF)
-			return ERROR_WRITING_FILE;
-	}
+	if(fputs(ctx->footer, fo) == EOF)
+		return ERROR_WRITING_FILE;
+
+	return OK;
+}
+
+status_t set_destructor(ADT_Vector_t *vector, destructor_t destructor)
+{
+	if(vector == NULL)
+		return ERROR_NULL_POINTER;
+
+	vector->delete_element = destructor;
+
+	return OK;
+}
+
+status_t set_clonator(ADT_Vector_t *vector, clonator_t clonator)
+{
+	if(vector == NULL)
+		return ERROR_NULL_POINTER;
+
+	vector->clone_element = clonator;
+
+	return OK;
+}
+
+status_t set_csv_exporter(ADT_Vector_t *vector, printer_t csv_exporter)
+{
+	if(vector == NULL)
+		return ERROR_NULL_POINTER;
+
+	vector->export_element_as_csv = csv_exporter;
+
+	return OK;
+}
+
+status_t set_kml_exporter(ADT_Vector_t *vector, printer_t kml_exporter)
+{
+	if(vector == NULL)
+		return ERROR_NULL_POINTER;
+
+	vector->export_element_as_kml = kml_exporter;
 
 	return OK;
 }

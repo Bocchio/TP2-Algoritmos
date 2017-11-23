@@ -4,17 +4,13 @@
 #include "utils.h"
 #include "vector.h"
 #include "nmea.h"
-#include "adt.h"
 #include "xml.h"
 
 /* kml context for the export functions */
 xml_ctx_t kml_ctx = {
-	TRUE, /* print the xml header */
-	KML_HEADER, /* open the kml file */
-	KML_FOOTER, /* close the kml file */
-	NULL, /* no attributes */
-	NMEA_GGA_LABEL, /* label of the GGA information */
-	4 /* tabs of indentation */
+	KML_HEADER,
+	KML_FOOTER,
+	4 /* indentation */
 };
 
 /* Context for the export functions, corresponds with file_format_t */
@@ -59,9 +55,11 @@ status_t parse_NMEA(FILE *fi, ADT_Vector_t **gga_vector)
 				free_string_array(&fields);
 				return st;
 			}
-			if((st = ADT_Vector_append(*gga_vector, node)) != OK){
-				free_string_array(&fields);
-				return st;
+			if(node != NULL){
+				if((st = ADT_Vector_append(*gga_vector, node)) != OK){
+					free_string_array(&fields);
+					return st;
+				}
 			}
 		}
 		free_string_array(&fields);
@@ -73,22 +71,28 @@ status_t parse_NMEA(FILE *fi, ADT_Vector_t **gga_vector)
 status_t ADT_NMEA_GGA_new(ADT_NMEA_GGA_t **gga_node, string *fields)
 {
 	status_t st;
+	bool_t is_empty;
 	char *tmp;
 
 	if((*gga_node = (ADT_NMEA_GGA_t *) malloc(sizeof(ADT_NMEA_GGA_t))) == NULL)
 		return ERROR_MEMORY;
 
-	if((st = parse_NMEA_latlon(fields[GPGGA_LONGITUDE_POS], &((*gga_node)->longitude))) != OK){
+	if((st = parse_NMEA_latitude(fields[GPGGA_LONG_POS], &((*gga_node)->longitude), &is_empty)) != OK){
 		ADT_NMEA_GGA_delete(gga_node);
 		return st;
 	}
 
-	if((st = parse_NMEA_latlon(fields[GPGGA_LATITUDE_POS], &((*gga_node)->latitude))) != OK){
+	if((st = parse_NMEA_longitude(fields[GPGGA_LAT_POS], &((*gga_node)->latitude), &is_empty)) != OK){
 		ADT_NMEA_GGA_delete(gga_node);
 		return st;
 	}
 
-	(*gga_node)->altitude = strtod(fields[GPGGA_ALTITUDE_POS], &tmp);
+	if(is_empty == TRUE){
+		ADT_NMEA_GGA_delete(gga_node);
+		return OK;
+	}
+
+	(*gga_node)->altitude = strtod(fields[GPGGA_ALT_POS], &tmp);
 	if(*tmp){
 		ADT_NMEA_GGA_delete(gga_node);
 		return ERROR_READING_FILE;
@@ -187,7 +191,7 @@ status_t export_NMEA(const ADT_Vector_t *vector, file_format_t format, FILE *fo)
 }
 
 
-status_t parse_NMEA_latlon(string coord, double *degrees)
+status_t parse_NMEA_latitude(string coord, double *degrees, bool_t *is_empty)
 {
 	char *tmp;
 	char *minutes_pos;
@@ -195,11 +199,11 @@ status_t parse_NMEA_latlon(string coord, double *degrees)
 	*degrees = 0;
 
 	if((minutes_pos = strchr(coord, '.')) == NULL){
-		/* if coord is not "" then the file is corrupt*/
+		/* if coord isn't "" then the file is corrupt*/
 		if(*coord)
 			return ERROR_READING_FILE;
-		else
-			return OK;
+		*is_empty = TRUE;
+		return OK;
 	}
 	minutes_pos -= 2;
 	/* 60 minutes in a degree */
@@ -211,6 +215,38 @@ status_t parse_NMEA_latlon(string coord, double *degrees)
 	*degrees += strtod(coord, &tmp);
 	if(*tmp)
 		return ERROR_READING_FILE;
+
+	*is_empty = FALSE;
+
+	return OK;
+}
+
+status_t parse_NMEA_longitude(string coord, double *degrees, bool_t *is_empty)
+{
+	char *tmp;
+	char *minutes_pos;
+
+	*degrees = 0;
+
+	if((minutes_pos = strchr(coord, '.')) == NULL){
+		/* if coord isn't "" then the file is corrupt*/
+		if(*coord)
+			return ERROR_READING_FILE;
+		*is_empty = TRUE;
+		return OK;
+	}
+	minutes_pos -= 2;
+	/* 60 minutes in a degree */
+	*degrees += strtod(minutes_pos, &tmp)/60.0;
+	if(*tmp)
+		return ERROR_READING_FILE;
+
+	*minutes_pos = '\0';
+	*degrees += strtod(coord, &tmp);
+	if(*tmp)
+		return ERROR_READING_FILE;
+
+	*is_empty = FALSE;
 
 	return OK;
 }

@@ -1,0 +1,4 @@
+			</LineString>
+		</Placemark>
+	</Document>
+</kml>
