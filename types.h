@@ -1,6 +1,8 @@
 #ifndef TYPES__H
 #define TYPES__H
 
+#include <stdio.h>
+
 typedef enum {
 	OK,
 	ERROR_NULL_POINTER,
