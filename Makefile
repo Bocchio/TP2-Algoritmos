@@ -23,6 +23,9 @@ nmea.o: nmea.c
 main.o: main.c
 	$(CC) -c $(CFLAGS) $(LANGUAGE) -o $@ $<
 
+config.o: config.c
+	$(CC) -c $(CFLAGS) $(LANGUAGE) -o $@ $<
+	
 clean:
 	rm -f *.o 
 
