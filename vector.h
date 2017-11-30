@@ -1,6 +1,7 @@
 #ifndef VECTOR__H
 #define VECTOR__H
 
+#include <stdio.h>
 #include "types.h"
 
 #define ADT_Vector_INIT_CHOP	15
