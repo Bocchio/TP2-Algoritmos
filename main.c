@@ -12,7 +12,6 @@
 int main(int argc, char *argv[])
 {
 	status_t st;
-    config_t config;
     FILE *fi,*fo;
     ADT_Vector_t *gga_vector;
 
