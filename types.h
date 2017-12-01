@@ -27,7 +27,7 @@ typedef char * string;
 typedef enum {
 	FORMAT_CSV,
 	FORMAT_KML
-} file_format_t;
+} doc_type_t;
 
 typedef status_t (*destructor_t)(void **);
 typedef void * (*clonator_t)(const void *);
