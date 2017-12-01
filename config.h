@@ -5,8 +5,8 @@
 #include "types.h"
 
 typedef struct{
-	string fi_path;
-	string fo_path;
+	string input_file;
+	string output_file;
 	doc_type_t file_format;
 } config_t;
 
