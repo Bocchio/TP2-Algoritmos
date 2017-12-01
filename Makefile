@@ -16,7 +16,6 @@ utils.o: utils.c utils.h types.h
 errors.o: errors.c errors.h types.h lang_support.h
 	$(CC) -c $(CFLAGS) $(LANGUAGE) -o $@ $<
 
-nmea.o: nmea.c
 nmea.o: nmea.c nmea.h utils.h types.h
 	$(CC) -c $(CFLAGS) $(LANGUAGE) -o $@ $<
 
