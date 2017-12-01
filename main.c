@@ -8,6 +8,7 @@
 #include "utils.h"
 #include "vector.h"
 #include "nmea.h"
+#include "processor.h"
 
 extern config;
 
