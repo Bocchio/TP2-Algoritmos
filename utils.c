@@ -180,8 +180,10 @@ status_t free_string_array(string **s,size_t len)
 {
 	size_t i;
 
-	for(i = 0; i < len; i++)
+	for(i = 0; i < len; i++){
 		free((*s)[i]);
+		(*s)[i]=NULL;
+	}
 	free(*s);
 	*s = NULL;
 
