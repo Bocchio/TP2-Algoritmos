@@ -34,10 +34,20 @@ int main(int argc, char *argv[])
         show_error(st);
         return st;
     }
-
-   
-
-	return OK;
+    if((st=process_gps_file())!=OK){
+	     fclose(fi);
+	     if(fclose(fo)==EOF)
+		     show_error(ERROR_WRITING_FILE);
+	    show_error(st);
+	    return st;
+    }
+    fclose(fi);
+    if(fclose(fo)==EOF){
+	    	 st=ERROR_WRITING_FILE;
+		 show_error(st);
+	    	 return st;
+    }
+    return OK;
 }
 
 status_t validate_arguments(int argc, char *argv[], config_t *config)
