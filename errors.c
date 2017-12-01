@@ -3,7 +3,7 @@
 #include "types.h"
 #include "lang_support.h"
 
-char *errors[] = {
+char *errors[MAX_ERRORS] = {
 	MSG_OK,
 	MSG_ERROR_NULL_POINTER,
 	MSG_ERROR_MEMORY,

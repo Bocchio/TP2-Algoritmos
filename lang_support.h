@@ -1,5 +1,5 @@
-#ifndef LANGUAGES__H
-#define LANGUAGES__H
+#ifndef LANG_SUPPORT__H
+#define LANG_SUPPORT__H
 
 #ifdef SPANISH
 	#include "lang_es.h"

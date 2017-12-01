@@ -8,11 +8,13 @@
 #include "utils.h"
 #include "vector.h"
 #include "nmea.h"
+#include "processor.h"
+
+extern config;
 
 int main(int argc, char *argv[])
 {
 	status_t st;
-    config_t config;
     FILE *fi,*fo;
     ADT_Vector_t *gga_vector;
 
@@ -33,24 +35,20 @@ int main(int argc, char *argv[])
         show_error(st);
         return st;
     }
-
-    if((st = parse_NMEA(fi, &gga_vector)) != OK){
-        fclose(fi);
-        if(fclose(fo) == EOF)
-            show_error(ERROR_WRITING_FILE);
-        show_error(st);
-        return st;
+    if((st=process_gps_file())!=OK){
+	     fclose(fi);
+	     if(fclose(fo)==EOF)
+		     show_error(ERROR_WRITING_FILE);
+	    show_error(st);
+	    return st;
     }
-
-    if((st = export_NMEA(gga_vector, config.file_format, fo)) != OK){
-        fclose(fi);
-        if(fclose(fo) == EOF)
-            show_error(ERROR_WRITING_FILE);
-        show_error(st);
-        return st;
+    fclose(fi);
+    if(fclose(fo)==EOF){
+	    	 st=ERROR_WRITING_FILE;
+		 show_error(st);
+	    	 return st;
     }
-
-	return OK;
+    return OK;
 }
 
 status_t validate_arguments(int argc, char *argv[], config_t *config)
@@ -78,14 +76,14 @@ status_t validate_arguments(int argc, char *argv[], config_t *config)
             }
         }
         else if(!strcmp(argv[i], CMD_ARG_OUTPUT_FILE_TOKEN)){
-            if((st = strdup(argv[i+1], &(config->fo_path))) != OK)
+            if((st = strdup(argv[i+1], &(config->output_file))) != OK)
                 return st;
         }
         else
             return ERROR_PROGRAM_INVOCATION;
     }
-    if((st = strdup(argv[CMD_ARG_INPUT_FILE_POS], &(config->fi_path))) != OK){
-        free(config->fo_path);
+    if((st = strdup(argv[CMD_ARG_INPUT_FILE_POS], &(config->input_file))) != OK){
+        free(config->output_file);
         return st;
     }
 

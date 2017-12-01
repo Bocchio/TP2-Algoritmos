@@ -4,6 +4,7 @@
 #include "utils.h"
 #include "vector.h"
 #include "nmea.h"
+#include "types.h"
 
 status_t parse_NMEA(FILE *fi, ADT_Vector_t **gga_vector)
 {
@@ -11,6 +12,7 @@ status_t parse_NMEA(FILE *fi, ADT_Vector_t **gga_vector)
 	bool_t eof = FALSE;
 	string line;
 	string *fields;
+	size_t len_fields_array;
 	ADT_NMEA_GGA_t *node;
 
 	if((st = ADT_Vector_new(gga_vector)) != OK){
@@ -27,7 +29,7 @@ status_t parse_NMEA(FILE *fi, ADT_Vector_t **gga_vector)
 		return st;
 	}
 
-	if((st = ADT_Vector_set_label(*gga_vector, KML_COORDINATES_LABEL)) != OK){
+	if((st = ADT_Vector_set_label(*gga_vector, KML_COORDINATES_TAG)) != OK){
 		ADT_Vector_delete(gga_vector);
 		return st;
 	}
@@ -38,7 +40,7 @@ status_t parse_NMEA(FILE *fi, ADT_Vector_t **gga_vector)
 			return st;
 		}
 		/* Create an array of fields from the line read */
-		if((st = split(line, &fields, NMEA_FIELD_DELIMITER)) != OK){
+		if((st = split(line, &fields, NMEA_FIELD_DELIMITER, &len_fields_array)) != OK){
 			return st;
 		}
 		free(line);
@@ -47,7 +49,7 @@ status_t parse_NMEA(FILE *fi, ADT_Vector_t **gga_vector)
 		if(!strcmp(fields[0], GPGGA_HEADER)){
 			/* create the GGA node */
 			if((st = ADT_NMEA_GGA_new(&node, fields)) != OK){
-				free_string_array(&fields);
+				free_string_array(&fields, len_fields_array);
 				ADT_Vector_delete(gga_vector);
 				return st;
 			}
@@ -55,13 +57,13 @@ status_t parse_NMEA(FILE *fi, ADT_Vector_t **gga_vector)
 			if(node != NULL){
 				/* then append it into vector */
 				if((st = ADT_Vector_append(*gga_vector, node)) != OK){
-					free_string_array(&fields);
+					free_string_array(&fields, len_fields_array);
 					ADT_Vector_delete(gga_vector);
 					return st;
 				}
 			}
 		}
-		free_string_array(&fields);
+		free_string_array(&fields, len_fields_array);
 	}
 
 	return OK;

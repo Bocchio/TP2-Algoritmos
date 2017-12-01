@@ -9,8 +9,8 @@
 
 status_t readline(FILE *fi, char **s, bool_t *eof);
 status_t readfile(FILE *fi, char **s);
-status_t strdup(const char * src, string *dest);
-status_t split(const char * src, char ***dest, char *delim);
-status_t free_string_array(string **s);
+status_t strdup(const char * src, string *target);
+status_t split(const char * src, char ***dest, char *delim,size_t * substrings_number);
+status_t free_string_array(string **s,size_t len);
 
 #endif
