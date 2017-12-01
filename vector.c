@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include "vector.h"
 #include "utils.h"
+#include "types.h"
 
 status_t ADT_Vector_new(ADT_Vector_t **vector)
 {
