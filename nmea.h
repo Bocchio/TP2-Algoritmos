@@ -5,9 +5,9 @@
 #include "types.h"
 #include "vector.h"
 
-#define KML_HEADER_FILE_PATH 	"kml_header.txt"
-#define KML_FOOTER_FILE_PATH 	"kml_footer.txt"
-#define KML_COORDINATES_LABEL	"coordinates"
+#define KML_HEADER_FILE	"kml_header.txt"
+#define KML_FOOTER_FILE 	"kml_footer.txt"
+#define KML_COORDINATES_TAG	"coordinates"
 
 #define GPGGA_HEADER	"$GPGGA"
 #define NMEA_GGA_LABEL	"coordinates"
