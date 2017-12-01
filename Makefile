@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -ansi -Wall -pedantic-errors -Wno-overlength-strings -g
+CFLAGS = -ansi -Wall -pedantic-Wno-overlength-strings -g
 LANGUAGE = -DENGLISH
 OBJS = $(patsubst %.c,%.o,$(wildcard *.c))
 
@@ -8,22 +8,22 @@ all: gpsviewer clean
 gpsviewer: main.o vector.o errors.o utils.o nmea.o
 	$(CC) $^ -o $@
 
-vector.o: vector.c
+vector.o: vector.c vector.h utils.h types.h
 	$(CC) -c $(CFLAGS) $(LANGUAGE) -o $@ $<
 
-utils.o: utils.c
+utils.o: utils.c utils.h types.h
 	$(CC) -c $(CFLAGS) $(LANGUAGE) -o $@ $<
 
-errors.o: errors.c
+errors.o: errors.c errors.h types.h lang_support.h
 	$(CC) -c $(CFLAGS) $(LANGUAGE) -o $@ $<
 
-nmea.o: nmea.c
+nmea.o: nmea.c nmea.h utils.h types.h
 	$(CC) -c $(CFLAGS) $(LANGUAGE) -o $@ $<
 
-main.o: main.c
+main.o: main.c main.h types.h errors.h config.h utils.h vector.h nmea.h
 	$(CC) -c $(CFLAGS) $(LANGUAGE) -o $@ $<
 
-config.o: config.c
+config.o: config.c config.h types.h
 	$(CC) -c $(CFLAGS) $(LANGUAGE) -o $@ $<
 	
 clean:
