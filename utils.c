@@ -50,7 +50,7 @@ status_t readline(FILE *fi, string *s, bool_t *eof)
 	return OK;
 }
 
-status_t readfile(FILE *fi, string *s)
+status_t load_text_file(FILE *fi, string *s)
 {
 	size_t alloc_size;
 	size_t len;
@@ -121,11 +121,10 @@ status_t strdup(const char *src, char **target)
    	   split("hello worldsepsep!!sep", &dest, "sep");
    would put {"hello world", "", "!!", "", NULL} inside dest
 */
-status_t split(const char * src, char ***dest, char *delim)
+status_t split(const char * src, char ***dest, char *delim,size_t * substrings_number)
 {
 	status_t st;
 	size_t i, j;
-	size_t substrings;
 	size_t delim_len;
 	bool_t found_delim;
 	char * copy;
@@ -139,14 +138,12 @@ status_t split(const char * src, char ***dest, char *delim)
 
 	delim_len = strlen(delim);
 	/* Count the total number of substrings and NUL terminate them */
-	for(i = 0, substrings = 1; copy[i]; i++){
+	for(i = 0, *substrings_number = 1, j = 0; copy[i]; i++){
 		/* If we found the delimiter, increment the number of substrings */
-		substrings++;
-		found_delim = TRUE;
-		for(j = 0; delim[j]; j++){
-			if((copy[i+j] != delim[j]) || !copy[i+j]){
-				substrings--;
-				found_delim = FALSE;
+		for(; copy[j+i]; j++){
+			if(copy[j+i]==delim[j]){
+				(*substrings_number)++;
+				found_delim=TRUE;
 				break;
 			}
 		}
@@ -179,11 +176,11 @@ status_t split(const char * src, char ***dest, char *delim)
 }
 
 /* Receives a pointer to a string array and frees it */
-status_t free_string_array(string **s)
+status_t free_string_array(string **s,size_t len)
 {
 	size_t i;
 
-	for(i = 0; (*s)[i] != NULL; i++)
+	for(i = 0; i < len; i++)
 		free((*s)[i]);
 	free(*s);
 	*s = NULL;
