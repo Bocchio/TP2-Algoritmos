@@ -4,6 +4,7 @@
 #include "utils.h"
 #include "vector.h"
 #include "nmea.h"
+#include "types.h"
 
 status_t parse_NMEA(FILE *fi, ADT_Vector_t **gga_vector)
 {
