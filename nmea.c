@@ -29,7 +29,7 @@ status_t parse_NMEA(FILE *fi, ADT_Vector_t **gga_vector)
 		return st;
 	}
 
-	if((st = ADT_Vector_set_label(*gga_vector, KML_COORDINATES_LABEL)) != OK){
+	if((st = ADT_Vector_set_label(*gga_vector, KML_COORDINATES_TAG)) != OK){
 		ADT_Vector_delete(gga_vector);
 		return st;
 	}
@@ -217,12 +217,12 @@ status_t NMEA_get_kml_ctx(void **ctx)
 	if((kml_ctx = (xml_ctx_t *) malloc(sizeof(xml_ctx_t))) == NULL)
 		return ERROR_MEMORY;
 
-	if((header_file = fopen(KML_HEADER_FILE_PATH, "rt")) == NULL){
+	if((header_file = fopen(KML_HEADER_FILE, "rt")) == NULL){
 		NMEA_destroy_kml_ctx((void **) &kml_ctx);
 		return ERROR_OPENING_FILE;
 	}
 
-	if((footer_file = fopen(KML_FOOTER_FILE_PATH, "rt")) == NULL){
+	if((footer_file = fopen(KML_FOOTER_FILE, "rt")) == NULL){
 		NMEA_destroy_kml_ctx((void **) &kml_ctx);
 		return ERROR_OPENING_FILE;
 	}
