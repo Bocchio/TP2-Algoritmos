@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "utils.h"
+#include "types.h"
 
 status_t readline(FILE *fi, string *s, bool_t *eof)
 {
