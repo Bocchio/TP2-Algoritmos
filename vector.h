@@ -28,6 +28,7 @@ status_t ADT_Vector_set_destructor(ADT_Vector_t *vector, destructor_t destructor
 status_t ADT_Vector_set_clonator(ADT_Vector_t *vector, clonator_t clonator);
 status_t ADT_Vector_set_csv_exporter(ADT_Vector_t *vector, printer_t csv_exporter);
 status_t ADT_Vector_set_kml_exporter(ADT_Vector_t *vector, printer_t kml_exporter);
+status_t ADT_Vector_set_destructor(ADT_Vector_t *vector, destructor_t destructor);
 status_t ADT_Vector_set_label(ADT_Vector_t *vector, string label);
 
 #endif

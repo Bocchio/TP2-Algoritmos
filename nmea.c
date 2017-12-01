@@ -34,23 +34,26 @@ status_t parse_NMEA(FILE *fi, ADT_Vector_t **gga_vector)
 
 	/* Read every line of the file */
 	while(eof == FALSE){
-		/* Get the fields*/
 		if((st = readline(fi, &line, &eof)) != OK){
 			return st;
 		}
+		/* Create an array of fields from the line read */
 		if((st = split(line, &fields, NMEA_FIELD_DELIMITER)) != OK){
 			return st;
 		}
 		free(line);
 
-		/* If it's a GGA node append it to the vector */
+		/* If it's a GGA message */
 		if(!strcmp(fields[0], GPGGA_HEADER)){
+			/* create the GGA node */
 			if((st = ADT_NMEA_GGA_new(&node, fields)) != OK){
 				free_string_array(&fields);
 				ADT_Vector_delete(gga_vector);
 				return st;
 			}
+			/* If the node is not NULL (i.e, it contained geografic information) */
 			if(node != NULL){
+				/* then append it into vector */
 				if((st = ADT_Vector_append(*gga_vector, node)) != OK){
 					free_string_array(&fields);
 					ADT_Vector_delete(gga_vector);
@@ -117,7 +120,7 @@ status_t ADT_NMEA_GGA_new(ADT_NMEA_GGA_t **gga_node, string *fields)
 status_t ADT_NMEA_GGA_delete(ADT_NMEA_GGA_t **gga_node)
 {
 	free(*gga_node);
-	gga_node = NULL;
+	*gga_node = NULL;
 
 	return OK;
 }
