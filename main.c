@@ -35,21 +35,7 @@ int main(int argc, char *argv[])
         return st;
     }
 
-    if((st = parse_NMEA(fi, &gga_vector)) != OK){
-        fclose(fi);
-        if(fclose(fo) == EOF)
-            show_error(ERROR_WRITING_FILE);
-        show_error(st);
-        return st;
-    }
-
-    if((st = export_NMEA(gga_vector, config.file_format, fo)) != OK){
-        fclose(fi);
-        if(fclose(fo) == EOF)
-            show_error(ERROR_WRITING_FILE);
-        show_error(st);
-        return st;
-    }
+   
 
 	return OK;
 }
