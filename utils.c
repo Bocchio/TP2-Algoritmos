@@ -94,19 +94,21 @@ status_t readfile(FILE *fi, string *s)
 	return OK;
 }
 
-status_t strdup(const char *src, char **dest)
+status_t strdup(const char *src, char **target)
 {
 	size_t i;
 	size_t len;
-
+	
+	if(src==NULL||target==NULL)
+		return ERROR_NULL_POINTER;
 	len = strlen(src);
-	if((*dest = malloc((len + 1)*sizeof(char))) == NULL){
+	if((*target = malloc((len + 1)*sizeof(char))) == NULL){
 		return ERROR_MEMORY;
 	}
 
 	for(i = 0; src[i]; i++)
-		(*dest)[i] = src[i];
-	(*dest)[i] = src[i];
+		(*target)[i] = src[i];
+	(*target)[i] = '\0';
 
 	return OK;
 }
@@ -129,6 +131,8 @@ status_t split(const char * src, char ***dest, char *delim)
 	char * copy;
 	char * aux;
 
+	if(src==NULL || dest==NULL || *dest==NULL || delim==NULL)
+		return ERROR_NULL_POINTER;
 	if((st = strdup(src, &copy)) != OK){
 		return st;
 	}
