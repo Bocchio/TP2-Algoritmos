@@ -9,6 +9,8 @@
 #include "vector.h"
 #include "nmea.h"
 
+extern config;
+
 int main(int argc, char *argv[])
 {
 	status_t st;
