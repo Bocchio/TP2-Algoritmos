@@ -25,6 +25,7 @@ status_t readline(FILE *fi, string *s, bool_t *eof)
 		if(len == alloc_size - 1){
 			if((aux = realloc(*s, (alloc_size + CHOP_SIZE)*sizeof(char))) == NULL){
 				free(*s);
+				*s=NULL;
 				return ERROR_MEMORY;
 			}
 			alloc_size += CHOP_SIZE;
@@ -38,6 +39,7 @@ status_t readline(FILE *fi, string *s, bool_t *eof)
 	if(len + 1 < alloc_size){
 		if((aux = realloc(*s, (len + 1)*sizeof(char))) == NULL){
 			free(*s);
+			*s=NULL;
 			return ERROR_MEMORY;
 		}
 		*s = aux;
@@ -69,6 +71,7 @@ status_t readfile(FILE *fi, string *s)
 		if(len == alloc_size - 1){
 			if((aux = realloc(*s, (alloc_size + CHOP_SIZE)*sizeof(char))) == NULL){
 				free(*s);
+				*s=NULL;
 				return ERROR_MEMORY;
 			}
 			alloc_size += CHOP_SIZE;
@@ -82,6 +85,7 @@ status_t readfile(FILE *fi, string *s)
 	if(len + 1 < alloc_size){
 		if((aux = realloc(*s, (len + 1)*sizeof(char))) == NULL){
 			free(*s);
+			*s=NULL;
 			return ERROR_MEMORY;
 		}
 		*s = aux;
