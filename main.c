@@ -76,14 +76,14 @@ status_t validate_arguments(int argc, char *argv[], config_t *config)
             }
         }
         else if(!strcmp(argv[i], CMD_ARG_OUTPUT_FILE_TOKEN)){
-            if((st = strdup(argv[i+1], &(config->fo_path))) != OK)
+            if((st = strdup(argv[i+1], &(config->output_file))) != OK)
                 return st;
         }
         else
             return ERROR_PROGRAM_INVOCATION;
     }
-    if((st = strdup(argv[CMD_ARG_INPUT_FILE_POS], &(config->fi_path))) != OK){
-        free(config->fo_path);
+    if((st = strdup(argv[CMD_ARG_INPUT_FILE_POS], &(config->input_file))) != OK){
+        free(config->output_file);
         return st;
     }
 
