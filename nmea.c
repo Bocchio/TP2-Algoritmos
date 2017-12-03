@@ -69,7 +69,7 @@ status_t parse_NMEA(FILE *fi, ADT_Vector_t **gga_vector)
 	return OK;
 }
 
-status_t ADT_NMEA_GGA_new(ADT_NMEA_GGA_t **gga_node, string *fields)
+status_t ADT_NMEA_GGA_new(ADT_GGA_t **gga_node, string *fields)
 {
 	status_t st;
 	bool_t is_empty;
@@ -119,7 +119,7 @@ status_t ADT_NMEA_GGA_new(ADT_NMEA_GGA_t **gga_node, string *fields)
 
 }
 
-status_t ADT_NMEA_GGA_delete(ADT_NMEA_GGA_t **gga_node)
+status_t ADT_NMEA_GGA_delete(ADT_GGA_t **gga_node)
 {
 	free(*gga_node);
 	*gga_node = NULL;
@@ -127,7 +127,7 @@ status_t ADT_NMEA_GGA_delete(ADT_NMEA_GGA_t **gga_node)
 	return OK;
 }
 
-status_t ADT_NMEA_GGA_export_as_kml(const ADT_NMEA_GGA_t *gga, void *_ctx, FILE *fo)
+status_t ADT_NMEA_GGA_export_as_kml(const ADT_GGA_t *gga, void *_ctx, FILE *fo)
 {
 	uchar i;
 	xml_ctx_t *ctx;
@@ -149,7 +149,7 @@ status_t ADT_NMEA_GGA_export_as_kml(const ADT_NMEA_GGA_t *gga, void *_ctx, FILE 
 	return OK;
 }
 
-status_t ADT_NMEA_GGA_export_as_csv(const ADT_NMEA_GGA_t *gga, void *ctx, FILE *fo)
+status_t ADT_NMEA_GGA_export_as_csv(const ADT_GGA_t *gga, void *ctx, FILE *fo)
 {
 	string delim;
 
