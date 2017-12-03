@@ -5,5 +5,4 @@
 #define MSG_ERROR_READING_FILE          "Couldn't read input file."
 #define MSG_ERROR_WRITING_FILE          "Couldn't write output file."
 #define MSG_ERROR_PROGRAM_INVOCATION    "Wrong command line parameters."
-#define MSG_ERROR_INVALID_FUNCTION_ARGS	"A function received invalid arguments."
 #define MSG_ERROR_UNKNOWN_FILE_FORMAT	"Unknown file format"
