@@ -37,6 +37,6 @@ typedef struct{
 	string header;
 	string footer;
 	uchar indentation;
-} xml_ctx_t;
+} xml_context_t;
 
 #endif 
