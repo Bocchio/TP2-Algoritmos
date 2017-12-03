@@ -5,5 +5,4 @@
 #define MSG_ERROR_READING_FILE          "No se pudo leer el archivo."
 #define MSG_ERROR_WRITING_FILE          "No se pudo escribir el archivo."
 #define MSG_ERROR_PROGRAM_INVOCATION    "Programa mal invocado."
-#define MSG_ERROR_INVALID_FUNCTION_ARGS	"Una función recibió argumentos inválidos."
 #define MSG_ERROR_UNKNOWN_FILE_FORMAT	"Formato de archivo erróneo"
