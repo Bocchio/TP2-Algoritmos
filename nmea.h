@@ -32,17 +32,17 @@ typedef struct{
 	double latitude;
 	double longitude;
 	double altitude;
-} ADT_NMEA_GGA_t;
+} ADT_GGA_t;
 
 status_t parse_NMEA(FILE *fi, ADT_Vector_t **gga);
 status_t export_NMEA(const ADT_Vector_t *vector, file_format_t format, FILE *fo);
 status_t parse_NMEA_latitude(string coord, double *degrees, bool_t *is_empty);
 status_t parse_NMEA_longitude(string coord, double *degrees, bool_t *is_empty);
 
-status_t ADT_NMEA_GGA_new(ADT_NMEA_GGA_t **gga_node, string *fields);
-status_t ADT_NMEA_GGA_delete(ADT_NMEA_GGA_t **gga_node);
-status_t ADT_NMEA_GGA_export_as_kml(const ADT_NMEA_GGA_t *gga_node, void *ctx, FILE *fo);
-status_t ADT_NMEA_GGA_export_as_csv(const ADT_NMEA_GGA_t *gga_node, void *ctx, FILE *fo);
+status_t ADT_NMEA_GGA_new(ADT_GGA_t **gga_node, string *fields);
+status_t ADT_NMEA_GGA_delete(ADT_GGA_t **gga_node);
+status_t ADT_NMEA_GGA_export_as_kml(const ADT_GGA_t *gga_node, void *ctx, FILE *fo);
+status_t ADT_NMEA_GGA_export_as_csv(const ADT_GGA_t *gga_node, void *ctx, FILE *fo);
 
 status_t NMEA_get_csv_ctx(void **ctx);
 status_t NMEA_get_kml_ctx(void **ctx);
