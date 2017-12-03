@@ -130,12 +130,12 @@ status_t ADT_NMEA_GGA_delete(ADT_GGA_t **gga_node)
 status_t ADT_NMEA_GGA_export_as_kml(const ADT_GGA_t *gga, void *_ctx, FILE *fo)
 {
 	uchar i;
-	xml_ctx_t *ctx;
+	xml_context_t *context;
 
 	if(gga == NULL || _ctx == NULL || fo == NULL)
 		return ERROR_NULL_POINTER;
 
-	ctx = (xml_ctx_t *) _ctx;
+	ctx = (xml_context_t *) _ctx;
 
 	/* Tabulate the line*/
 	for(i = 0; i < ctx->indentation; i++){
@@ -212,7 +212,7 @@ status_t NMEA_get_kml_ctx(void **ctx)
 	status_t st;
 	FILE *header_file;
 	FILE *footer_file;
-	xml_ctx_t *kml_ctx;
+	xml_context_t *kml_ctx;
 	
 	if(ctx == NULL)
 		return ERROR_NULL_POINTER;
@@ -261,7 +261,7 @@ status_t NMEA_destroy_csv_ctx(void **_ctx)
 
 status_t NMEA_destroy_kml_ctx(void **_ctx)
 {
-	xml_ctx_t **ctx = (xml_ctx_t **) _ctx;
+	xml_context_t **ctx = (xml_context_t **) _ctx;
 
 	free((*ctx)->header);
 	free((*ctx)->footer);
