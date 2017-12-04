@@ -35,8 +35,8 @@ typedef struct{
 	double altitude;
 } ADT_GGA_t;
 
-status_t NMEA_export_as_csv(const ADT_Vector_t *vector, printer_t ADT_Vector_export_as_csv, FILE *fo);
-status_t NMEA_export_as_kml(const ADT_Vector_t *vector, creator_t NMEA_get_kml_ctx, destructor_t NMEA_destroy_kml_ctx, printer_t ADT_Vector_export_as_kml, FILE *fo);
+status_t NMEA_export_as_csv(const ADT_Vector_t *vector, void *context, FILE *fo);
+status_t NMEA_export_as(const ADT_Vector_t *vector, void * context, FILE *fo);
 
 status_t ADT_GGA_parse_latitude(string coord, double *degrees, bool_t *is_empty);
 status_t ADT_GGA_parse_longitude(string coord, double *degrees, bool_t *is_empty);
