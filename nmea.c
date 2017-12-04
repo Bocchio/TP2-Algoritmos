@@ -78,12 +78,12 @@ status_t ADT_NMEA_GGA_new(ADT_GGA_t **gga_node, string *fields)
 	if((*gga_node = (ADT_NMEA_GGA_t *) malloc(sizeof(ADT_NMEA_GGA_t))) == NULL)
 		return ERROR_MEMORY;
 
-	if((st = parse_NMEA_latitude(fields[GPGGA_LON_POS], &((*gga_node)->longitude), &is_empty)) != OK){
+	if((st = ADT_GGA_parse_latitude(fields[GPGGA_LON_POS], &((*gga_node)->longitude), &is_empty)) != OK){
 		ADT_NMEA_GGA_delete(gga_node);
 		return st;
 	}
 
-	if((st = parse_NMEA_longitude(fields[GPGGA_LAT_POS], &((*gga_node)->latitude), &is_empty)) != OK){
+	if((st = ADT_GGA_parse_longitude(fields[GPGGA_LAT_POS], &((*gga_node)->latitude), &is_empty)) != OK){
 		ADT_NMEA_GGA_delete(gga_node);
 		return st;
 	}
