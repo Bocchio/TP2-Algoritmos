@@ -10,16 +10,16 @@ printer_t doc_type_exporting_functions[]={
 
 void *context;
 
-status_t process_gps_file(FILE*fi,FILE*fo,ADT_Vector_t * gga_vector,file_format_t file_format){
+status_t process_gps_file(FILE*fi,FILE*fo,ADT_Vector_t * gga_vector,doc_type_t doc_type){
  
   status_t st;
   
-  if(gga_vector==NULL||fi==NULL||fo==NULL)
+  if(gga_vector == NULL || fi == NULL || fo == NULL)
        return ERROR_NULL_POINTER;
   
    if((st = ADT_GGA_load_fields(fi, &gga_vector)) != OK)
         return st;
-    if((st = doc_type_exporting_functions[config.file_format](gga_vector,context,fo)) != OK)
+    if((st = doc_type_exporting_functions[config.doc_type](gga_vector,context,fo)) != OK)
         return st;
     return OK;
 }
