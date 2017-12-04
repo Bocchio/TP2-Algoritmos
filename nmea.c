@@ -6,7 +6,7 @@
 #include "nmea.h"
 #include "types.h"
 
-status_t parse_NMEA(FILE *fi, ADT_Vector_t **gga_vector)
+status_t ADT_GGA_load_fields(FILE *fi, ADT_Vector_t **gga_vector)
 {
 	status_t st;
 	bool_t eof = FALSE;
@@ -19,12 +19,12 @@ status_t parse_NMEA(FILE *fi, ADT_Vector_t **gga_vector)
 		return st;
 	}
 
-	if((st = ADT_Vector_set_csv_exporter(*gga_vector, (printer_t) ADT_NMEA_GGA_export_as_csv)) != OK){
+	if((st = ADT_Vector_set_csv_exporter(*gga_vector, ADT_GGA_export_as_csv)) != OK){
 		ADT_Vector_delete(gga_vector);
 		return st;
 	}
 
-	if((st = ADT_Vector_set_kml_exporter(*gga_vector, (printer_t) ADT_NMEA_GGA_export_as_kml)) != OK){
+	if((st = ADT_Vector_set_kml_exporter(*gga_vector, ADT_GGA_export_as_kml)) != OK){
 		ADT_Vector_delete(gga_vector);
 		return st;
 	}
@@ -127,7 +127,7 @@ status_t ADT_NMEA_GGA_delete(ADT_GGA_t **gga_node)
 	return OK;
 }
 
-status_t ADT_NMEA_GGA_export_as_kml(const ADT_GGA_t *gga, void *_ctx, FILE *fo)
+status_t ADT_GGA_export_as_kml(const ADT_GGA_t *gga, void *_ctx, FILE *fo)
 {
 	uchar i;
 	xml_context_t *context;
@@ -149,7 +149,7 @@ status_t ADT_NMEA_GGA_export_as_kml(const ADT_GGA_t *gga, void *_ctx, FILE *fo)
 	return OK;
 }
 
-status_t ADT_NMEA_GGA_export_as_csv(const ADT_GGA_t *gga, void *ctx, FILE *fo)
+status_t ADT_GGA_export_as_csv(const ADT_GGA_t *gga, void *ctx, FILE *fo)
 {
 	string delim;
 
@@ -163,46 +163,36 @@ status_t ADT_NMEA_GGA_export_as_csv(const ADT_GGA_t *gga, void *ctx, FILE *fo)
 	return OK;
 }
 
-status_t export_NMEA(const ADT_Vector_t *vector, file_format_t format, FILE *fo)
+status_t NMEA_export_as_csv(const ADT_Vector_t *vector, void *context, FILE *fo)
 {
 	status_t st;
-	void *ctx;
-	/* Context for each export function */
-	creator_t ctx_getters[] = {
-		(creator_t) NMEA_get_csv_ctx,
-		(creator_t) NMEA_get_kml_ctx
-	};
-	/* Context destructors for each format */ 
-	destructor_t ctx_destructors[] = {
-		(destructor_t) NMEA_destroy_csv_ctx,
-		(destructor_t) NMEA_destroy_kml_ctx
-	};
-	/* Dispatch table for each format */
-	printer_t export_lookup_table[] = {
-		(printer_t) &ADT_Vector_export_as_csv,
-		(printer_t) &ADT_Vector_export_as_kml
-	};
+	*context = OUTPUT_CSV_DELIMITER;
 
 	if(vector == NULL)
 		return ERROR_NULL_POINTER;
 
-	if((st = ctx_getters[format](&ctx)) != OK)
+	if((st = ADT_Vector_export_as_csv(vector, context, fo)) != OK)
 		return st;
 
-	if((st = export_lookup_table[format](vector, ctx, fo)) != OK)
-		return st;
-
-	ctx_destructors[format](&ctx);
+	NMEA_destroy_csv_ctx(&ctx);
 
 	return OK;
 }
 
-status_t NMEA_get_csv_ctx(void **ctx)
+status_t NMEA_export_as(const ADT_Vector_t *vector, void * context, FILE *fo)
 {
-	if(ctx == NULL)
+	status_t st;
+	
+	if(vector == NULL)
 		return ERROR_NULL_POINTER;
 
-	*ctx = OUTPUT_CSV_DELIMITER;
+	if((st = NMEA_get_kml_ctx(&ctx)) != OK)
+		return st;
+
+	if((st = ADT_Vector_export_as_kml(vector, ctx, fo)) != OK)
+		return st;
+
+	NMEA_destroy_kml_ctx(&ctx);
 
 	return OK;
 }
