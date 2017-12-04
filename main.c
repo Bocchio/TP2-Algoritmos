@@ -35,7 +35,7 @@ int main(int argc, char *argv[])
         show_error(st);
         return st;
     }
-    if((st=process_gps_file())!=OK){
+    if((st=process_gps_file(fi,fo,config.doc_type))!=OK){
 	     fclose(fi);
 	     if(fclose(fo)==EOF)
 		     show_error(ERROR_WRITING_FILE);
