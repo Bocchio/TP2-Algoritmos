@@ -69,7 +69,7 @@ status_t validate_arguments(int argc, char *argv[], config_t *config)
                 config->file_format = FORMAT_CSV;
             }
             else if(!strcmp(argv[i+1], FILE_FORMAT_KML_FLAG)){
-                config->file_format = FORMAT_KML;
+                config->doc_type_t = FORMAT_KML;
             }
             else{
                 return ERROR_UNKNOWN_FILE_FORMAT;
