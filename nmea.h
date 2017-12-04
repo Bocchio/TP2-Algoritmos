@@ -21,9 +21,10 @@
 #define GPGGA_EW_INDICATOR_POS	5
 #define GPGGA_NS_INDICATOR_POS	3
 
-#define GPGGA_LAT_POS		2 /* latitude position on a GPGGA string */
-#define GPGGA_LON_POS		4 /* longitude position on a GPGGA string */
-#define GPGGA_ALT_POS		9 /* altitude position on a GPGGA string */
+#define GPGGA_HEADER_POS		1
+#define GPGGA_LATITUDE_POS		2 /* latitude position on a GPGGA string */
+#define GPGGA_LONGITUDE_POS		4 /* longitude position on a GPGGA string */
+#define GPGGA_ALTITUDE_POS		9 /* altitude position on a GPGGA string */
 
 #define OUTPUT_CSV_DELIMITER	"|"
 #define OUTPUT_KML_INDENTATION	4
@@ -36,8 +37,8 @@ typedef struct{
 
 status_t parse_NMEA(FILE *fi, ADT_Vector_t **gga);
 status_t export_NMEA(const ADT_Vector_t *vector, file_format_t format, FILE *fo);
-status_t parse_NMEA_latitude(string coord, double *degrees, bool_t *is_empty);
-status_t parse_NMEA_longitude(string coord, double *degrees, bool_t *is_empty);
+status_t ADT_NMEA_parse_latitude(string coord, double *degrees, bool_t *is_empty);
+status_t ADT_NMEA_parse_longitude(string coord, double *degrees, bool_t *is_empty);
 
 status_t ADT_NMEA_GGA_new(ADT_GGA_t **gga_node, string *fields);
 status_t ADT_NMEA_GGA_delete(ADT_GGA_t **gga_node);
