@@ -46,9 +46,9 @@ status_t parse_NMEA(FILE *fi, ADT_Vector_t **gga_vector)
 		free(line);
 
 		/* If it's a GGA message */
-		if(!strcmp(fields[0], GPGGA_HEADER)){
+		if(!strcmp(fields[GPGGA_HEADER_POS], GPGGA_HEADER)){
 			/* create the GGA node */
-			if((st = ADT_NMEA_GGA_new(&node, fields)) != OK){
+			if((st = ADT_GGA_new(&node, fields)) != OK){
 				free_string_array(&fields, len_fields_array);
 				ADT_Vector_delete(gga_vector);
 				return st;
