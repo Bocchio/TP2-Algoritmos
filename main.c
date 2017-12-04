@@ -66,7 +66,7 @@ status_t validate_arguments(int argc, char *argv[], config_t *config)
     for(i = 1; i < MAX_ARGS-1; i += 2){
         if(!strcmp(argv[i], CMD_ARG_FILE_FORMAT_TOKEN)){
             if(!strcmp(argv[i+1], FILE_FORMAT_CSV_FLAG)){
-                config->file_format = FORMAT_CSV;
+                config->doc_type_t = FORMAT_CSV;
             }
             else if(!strcmp(argv[i+1], FILE_FORMAT_KML_FLAG)){
                 config->doc_type_t = FORMAT_KML;
