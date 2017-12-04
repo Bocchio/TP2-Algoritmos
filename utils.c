@@ -99,7 +99,7 @@ status_t strdup(const char *src, char **target)
 	size_t i;
 	size_t len;
 	
-	if(src==NULL||target==NULL)
+	if(src == NULL || target == NULL || *target == NULL)
 		return ERROR_NULL_POINTER;
 	len = strlen(src);
 	if((*target = malloc((len + 1)*sizeof(char))) == NULL){
@@ -130,7 +130,7 @@ status_t split(const char * src, char ***dest, char *delim,size_t * substrings_n
 	char * copy;
 	char * aux;
 
-	if(src==NULL || dest==NULL || *dest==NULL || delim==NULL)
+	if(src==NULL || dest == NULL || *dest == NULL || **dest == NULL || delim==NULL)
 		return ERROR_NULL_POINTER;
 	if((st = strdup(src, &copy)) != OK){
 		return st;
@@ -179,8 +179,13 @@ status_t split(const char * src, char ***dest, char *delim,size_t * substrings_n
 status_t free_string_array(string **s,size_t len)
 {
 	size_t i;
-
+	
+	if(s == NULL)
+		return OK;
+	
 	for(i = 0; i < len; i++){
+		if((*s)[i] == NULL)
+			continue;
 		free((*s)[i]);
 		(*s)[i]=NULL;
 	}
