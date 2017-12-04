@@ -20,17 +20,17 @@ status_t ADT_GGA_load_fields(FILE *fi, ADT_Vector_t **gga_vector)
 	}
 
 	if((st = ADT_Vector_set_csv_exporter(*gga_vector, ADT_GGA_export_as_csv)) != OK){
-		ADT_Vector_delete(gga_vector);
+		ADT_GGA_fields_destructor(gga_vector);
 		return st;
 	}
 
 	if((st = ADT_Vector_set_kml_exporter(*gga_vector, ADT_GGA_export_as_kml)) != OK){
-		ADT_Vector_delete(gga_vector);
+		ADT_GGA_fields_destructor(gga_vector);
 		return st;
 	}
 
 	if((st = ADT_Vector_set_label(*gga_vector, KML_COORDINATES_TAG)) != OK){
-		ADT_Vector_delete(gga_vector);
+		ADT_GGA_fields_destructor(gga_vector);
 		return st;
 	}
 
@@ -50,7 +50,7 @@ status_t ADT_GGA_load_fields(FILE *fi, ADT_Vector_t **gga_vector)
 			/* create the GGA node */
 			if((st = ADT_GGA_new(&node, fields)) != OK){
 				free_string_array(&fields, len_fields_array);
-				ADT_Vector_delete(gga_vector);
+				ADT_GGA_fields_destructor(gga_vector);
 				return st;
 			}
 			/* If the node is not NULL (i.e, it contained geografic information) */
@@ -58,7 +58,7 @@ status_t ADT_GGA_load_fields(FILE *fi, ADT_Vector_t **gga_vector)
 				/* then append it into vector */
 				if((st = ADT_Vector_append(*gga_vector, node)) != OK){
 					free_string_array(&fields, len_fields_array);
-					ADT_Vector_delete(gga_vector);
+					ADT_GGA_fields_destructor(gga_vector);
 					return st;
 				}
 			}
@@ -69,7 +69,7 @@ status_t ADT_GGA_load_fields(FILE *fi, ADT_Vector_t **gga_vector)
 	return OK;
 }
 
-status_t ADT_NMEA_GGA_new(ADT_GGA_t **gga_node, string *fields)
+status_t ADT_GGA_fields_new_from_strings(ADT_GGA_t **gga_node, string *fields)
 {
 	status_t st;
 	bool_t is_empty;
@@ -79,23 +79,23 @@ status_t ADT_NMEA_GGA_new(ADT_GGA_t **gga_node, string *fields)
 		return ERROR_MEMORY;
 
 	if((st = ADT_GGA_parse_latitude(fields[GPGGA_LON_POS], &((*gga_node)->longitude), &is_empty)) != OK){
-		ADT_NMEA_GGA_delete(gga_node);
+		ADT_GGA_fields_destructor(gga_node);
 		return st;
 	}
 
 	if((st = ADT_GGA_parse_longitude(fields[GPGGA_LAT_POS], &((*gga_node)->latitude), &is_empty)) != OK){
-		ADT_NMEA_GGA_delete(gga_node);
+		ADT_GGA_fields_destructor(gga_node);
 		return st;
 	}
 
 	if(is_empty == TRUE){
-		ADT_NMEA_GGA_delete(gga_node);
+		ADT_GGA_fields_destructor(gga_node);
 		return OK;
 	}
 
 	(*gga_node)->altitude = strtod(fields[GPGGA_ALT_POS], &tmp);
 	if(*tmp){
-		ADT_NMEA_GGA_delete(gga_node);
+		ADT_GGA_fields_destructor(gga_node);
 		return ERROR_READING_FILE;
 	}
 
@@ -103,7 +103,7 @@ status_t ADT_NMEA_GGA_new(ADT_GGA_t **gga_node, string *fields)
 		(*gga_node)->latitude *= -1;
 	}
 	else if(strcmp(fields[GPGGA_NS_INDICATOR_POS], GPGGA_NORTH_TOKEN)){
-		ADT_NMEA_GGA_delete(gga_node);
+		ADT_GGA_fields_destructor(gga_node);
 		return ERROR_READING_FILE;
 	}
 
@@ -111,7 +111,7 @@ status_t ADT_NMEA_GGA_new(ADT_GGA_t **gga_node, string *fields)
 		(*gga_node)->longitude *= -1;
 	}
 	else if(strcmp(fields[GPGGA_EW_INDICATOR_POS], GPGGA_EAST_TOKEN)){
-		ADT_NMEA_GGA_delete(gga_node);
+		ADT_GGA_fields_destructor(gga_node);
 		return ERROR_READING_FILE;
 	}
 
