@@ -30,7 +30,7 @@ typedef enum {
 
 typedef status_t (*destructor_t)(void **);
 typedef void * (*clonator_t)(const void *);
-typedef status_t (*printer_t)(const void *, void *ctx, FILE *fo);
+typedef status_t (*printer_t)(const void *, void *context, FILE *fo);
 typedef status_t (*creator_t)(void **);
 
 typedef struct{
