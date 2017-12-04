@@ -99,7 +99,7 @@ status_t strdup(const char *src, char **target)
 	size_t i;
 	size_t len;
 	
-	if(src == NULL || target == NULL || *target == NULL)
+	if(src == NULL || target == NULL)
 		return ERROR_NULL_POINTER;
 	len = strlen(src);
 	if((*target = malloc((len + 1)*sizeof(char))) == NULL){
