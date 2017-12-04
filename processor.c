@@ -10,7 +10,7 @@ printer_t doc_type_exporting_functions[]={
 
 void *context;
 
-status_t process_gps_file(FILE*fi,FILE*fo,ADT_Vector_t * gga_vector,doc_type_t doc_type){
+status_t process_gps_file(FILE*fi, FILE*fo, ADT_Vector_t * gga_vector, doc_type_t doc_type){
  
   status_t st;
   
@@ -19,7 +19,7 @@ status_t process_gps_file(FILE*fi,FILE*fo,ADT_Vector_t * gga_vector,doc_type_t d
   
    if((st = ADT_GGA_load_fields(fi, &gga_vector)) != OK)
         return st;
-    if((st = doc_type_exporting_functions[config.doc_type](gga_vector,context,fo)) != OK)
+    if((st = doc_type_exporting_functions[doc_type](gga_vector,context,fo)) != OK)
         return st;
     return OK;
 }
