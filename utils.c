@@ -101,6 +101,7 @@ status_t strdup(const char *src, char **target)
 	
 	if(src == NULL || target == NULL)
 		return ERROR_NULL_POINTER;
+
 	len = strlen(src);
 	if((*target = malloc((len + 1)*sizeof(char))) == NULL){
 		return ERROR_MEMORY;
@@ -111,6 +112,19 @@ status_t strdup(const char *src, char **target)
 	(*target)[i] = '\0';
 
 	return OK;
+}
+
+/* Checks if the string s1 starts with the string s2 */
+bool_t starts_with(const char * s1, const char * s2)
+{	
+	size_t i;
+
+	for(i = 0; s2[i]; i++){
+		if(s1[i] != s2[i])
+			return FALSE;
+	}
+
+	return TRUE;
 }
 
 
@@ -126,33 +140,27 @@ status_t split(const char * src, char ***dest, char *delim, size_t *substrings_n
 	status_t st;
 	size_t i, j;
 	size_t delim_len;
-	bool_t found_delim;
 	char * copy;
 	char * aux;
 
-	if(src==NULL || dest == NULL || delim == NULL || substrings_number == NULL)
+	if(src == NULL || dest == NULL || delim == NULL || substrings_number == NULL)
 		return ERROR_NULL_POINTER;
+
 	if((st = strdup(src, &copy)) != OK){
 		return st;
 	}
 
 	delim_len = strlen(delim);
 	/* Count the total number of substrings and NUL terminate them */
-	for(i = 0, *substrings_number = 1, j = 0; copy[i]; i++){
-		/* If we found the delimiter, increment the number of substrings */
-		for(; copy[j+i]; j++){
-			if(copy[j+i]==delim[j]){
-				(*substrings_number)++;
-				found_delim=TRUE;
-				break;
-			}
-		}
+	for(i = 0, *substrings_number = 1; copy[i]; i++){
+		if(starts_with(copy + i, delim) == FALSE)
+			continue;
 		/* If the delimiter string was found, NUL terminate the substring
 		 * then jump to the end of the delimiter */
-		if(found_delim == TRUE){
-			copy[i+j] = '\0';
-			i += delim_len - 1;
-		}
+		copy[i] = '\0';
+		(*substrings_number)++;
+		/* The for post-increment will add 1, so we substract 1 to compensate */
+		i += delim_len - 1;
 	}
 
 	/* Take into account the the NULL pointer at the end */
@@ -160,17 +168,18 @@ status_t split(const char * src, char ***dest, char *delim, size_t *substrings_n
 		return ERROR_MEMORY;
 
 	/* Copy each substring into the array of strings */
-	for(i = 0, j = 0; j < *substrings_number; i++, j++){
-		if((st = strdup(copy + i, &aux)) != OK){
-			for(i = 0; i < j; i++)
-				free((*dest)[i]);
+	for(i = 0; i < *substrings_number; i++){
+		if((st = strdup(copy, &aux)) != OK){
+			for(j = 0; j < i; j++)
+				free((*dest)[j]);
 			free(*dest);
+			free(copy);
 			return st;
 		}
-		(*dest)[j] = aux;
-		i += strlen(aux) + delim_len - 1;
+		(*dest)[i] = aux;
+		copy += strlen(aux) + delim_len;
 	}
-	(*dest)[j] = NULL;
+	(*dest)[i] = NULL;
 
 	return OK;
 }

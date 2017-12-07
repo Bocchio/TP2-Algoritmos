@@ -17,14 +17,18 @@ void assert_int_eq_msg(int a, int b, string msg)
 
 void assert_str_eq(string a, string b)
 {
+	if(a == NULL && b == NULL)
+		return;
 	int cmp = !strcmp(a, b);
 	assert(cmp);
 }
 
 void assert_str_eq_msg(string a, string b, string msg)
 {
+	if(a == NULL && b == NULL)
+		return;
 	int cmp = !strcmp(a, b);
-	if(cmp)
+	if(!cmp)
 		fputs(msg, stderr);
 	assert(cmp);
 }
