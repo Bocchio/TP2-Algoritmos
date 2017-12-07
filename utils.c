@@ -130,7 +130,7 @@ status_t split(const char * src, char ***dest, char *delim,size_t * substrings_n
 	char * copy;
 	char * aux;
 
-	if(src==NULL || dest == NULL || *dest == NULL || **dest == NULL || delim==NULL)
+	if(src==NULL || dest == NULL || delim == NULL || substrings_number == NULL)
 		return ERROR_NULL_POINTER;
 	if((st = strdup(src, &copy)) != OK){
 		return st;
@@ -150,7 +150,7 @@ status_t split(const char * src, char ***dest, char *delim,size_t * substrings_n
 		/* If the delimiter string was found, NUL terminate the substring
 		 * then jump to the end of the delimiter */
 		if(found_delim == TRUE){
-			copy[i] = '\0';
+			copy[i+j] = '\0';
 			i += delim_len - 1;
 		}
 	}
