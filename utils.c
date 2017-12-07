@@ -121,7 +121,7 @@ status_t strdup(const char *src, char **target)
    	   split("hello worldsepsep!!sep", &dest, "sep");
    would put {"hello world", "", "!!", "", NULL} inside dest
 */
-status_t split(const char * src, char ***dest, char *delim,size_t * substrings_number)
+status_t split(const char * src, char ***dest, char *delim, size_t *substrings_number)
 {
 	status_t st;
 	size_t i, j;
@@ -156,11 +156,11 @@ status_t split(const char * src, char ***dest, char *delim,size_t * substrings_n
 	}
 
 	/* Take into account the the NULL pointer at the end */
-	if((*dest = (char **) malloc((substrings + 1)*sizeof(char *))) == NULL)
+	if((*dest = (char **) malloc((*substrings_number + 1)*sizeof(char *))) == NULL)
 		return ERROR_MEMORY;
 
 	/* Copy each substring into the array of strings */
-	for(i = 0, j = 0; j < substrings; i++, j++){
+	for(i = 0, j = 0; j < *substrings_number; i++, j++){
 		if((st = strdup(copy + i, &aux)) != OK){
 			for(i = 0; i < j; i++)
 				free((*dest)[i]);
