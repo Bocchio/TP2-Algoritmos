@@ -3,7 +3,7 @@
 
 #include "../types.h"
 
-#define RUN_TEST_MSG 		"Running test: "
+#define RUN_TEST_MSG 		"Running test"
 #define FAILURE_TEST_MSG 	"Error"
 #define TESTS_FAILED_MSG	"Failed"
 #define TESTS_SUCCEDED_MSG	"Succeded"

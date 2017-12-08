@@ -68,13 +68,13 @@ void _run_tests(test_t *tests, size_t n, char *suite_name)
 
 	putchar('\n');
 	for(i = 0; i < n; i++){
-		printf("\r%s%s %lu/%lu", RUN_TEST_MSG, suite_name, i+1, n);
+		printf("\r%s: %s %lu/%lu", RUN_TEST_MSG, suite_name, i+1, n);
 		if(tests[i].test_fun() == TEST_FAILURE){
 			show_test_failure(tests[i].test_name);
 			test_failed++;
+			continue;
 		}
-		else
-			test_succeded++;
+		test_succeded++;
 	}
 	putchar('\n');
 	printf("%s: %lu\n"\
