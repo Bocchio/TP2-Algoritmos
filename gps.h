@@ -3,7 +3,6 @@
 
 #include <stdio.h>
 #include "types.h"
-#include "vector.h"
 
 #define KML_HEADER_FILE		"kml_header.txt"
 #define KML_FOOTER_FILE 	"kml_footer.txt"
@@ -31,7 +30,7 @@
 #define OUTPUT_CSV_DELIMITER	"|"
 #define OUTPUT_KML_INDENTATION	4
 
-status_t process_gps_file(FILE *fi, ADT_Vector_t *data, doc_type_t doc_type, FILE *fo);
+status_t process_gps_file(FILE *fi, doc_type_t doc_type, FILE *fo);
 status_t get_NMEA_message(string NMEA_message, uint *checksum);
 status_t check_NMEA_message(const char * NMEA_message, uint checksum);
 

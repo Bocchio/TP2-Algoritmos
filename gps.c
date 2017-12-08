@@ -10,17 +10,15 @@ printer_t doc_type_exporting_functions[]={
 
 void *context;
 
-status_t process_gps_file(FILE *fi, FILE *fo, ADT_Vector_t *gga_vector, doc_type_t doc_type)
+status_t process_gps_file(FILE *fi, doc_type_t doc_type, FILE *fo)
 {
   status_t st;
 
-  if(gga_vector == NULL || fi == NULL || fo == NULL)
-       return ERROR_NULL_POINTER;
+    if(fi == NULL || fo == NULL){
+        return ERROR_NULL_POINTER;
+    }
 
-    if((st = ADT_NMEA_record_load_fields(fi, &gga_vector)) != OK)
-        return st;
-    if((st = doc_type_exporting_functions[doc_type](gga_vector,context,fo)) != OK)
-        return st;
+
     return OK;
 }
 
