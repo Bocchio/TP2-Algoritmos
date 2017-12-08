@@ -1,12 +1,12 @@
 CC = gcc
 CFLAGS = -ansi -Wall -pedantic -g
 
-all: test_utils clean
+all: tests clean
 
-test_utils: test_utils.o minitest.o ../utils.o split_tests.o starts_with_tests.o
+tests: tests.o minitest.o ../utils.o split_tests.o starts_with_tests.o
 	$(CC) $(CFLAGS) $^ -o $@
 
-test_utils.o: test_utils.c ../types.h ../utils.h
+tests.o: tests.c ../types.h ../utils.h
 	$(CC) -c $(CFLAGS) $^
 
 split_tests.o: split_tests.c split_tests.h
