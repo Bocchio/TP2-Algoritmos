@@ -174,7 +174,7 @@ status_t NMEA_export_as_csv(const ADT_Vector_t *vector, void *context, FILE *fo)
 	if((st = ADT_Vector_export_as_csv(vector, context, fo)) != OK)
 		return st;
 
-	NMEA_destroy_csv_ctx(&ctx);
+	NMEA_destroy_csv_ctx(&context);
 
 	return OK;
 }
@@ -186,13 +186,13 @@ status_t NMEA_export_as_kml(const ADT_Vector_t *vector, void * context, FILE *fo
 	if(vector == NULL)
 		return ERROR_NULL_POINTER;
 
-	if((st = NMEA_get_kml_ctx(&ctx)) != OK)
+	if((st = NMEA_get_kml_ctx(&context)) != OK)
 		return st;
 
-	if((st = ADT_Vector_export_as_kml(vector, ctx, fo)) != OK)
+	if((st = ADT_Vector_export_as_kml(vector, context, fo)) != OK)
 		return st;
 
-	NMEA_destroy_kml_ctx(&ctx);
+	NMEA_destroy_kml_ctx(&context);
 
 	return OK;
 }
