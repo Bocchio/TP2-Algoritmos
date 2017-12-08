@@ -6,64 +6,64 @@
 #include "types.h"
 
 
-status_t ADT_NMEA_record_new_from_strings(ADT_GGA_t **nmea_record, string *fields)
+status_t ADT_NMEA_record_new_from_strings(ADT_NMEA_record_t **nmea_record, string *fields)
 {
     status_t st;
     bool_t is_empty;
     char *tmp;
 
-    if((*gga_node = (ADT_NMEA_GGA_t *) malloc(sizeof(ADT_NMEA_GGA_t))) == NULL)
+    if((*nmea_record = (ADT_NMEA_GGA_t *) malloc(sizeof(ADT_NMEA_GGA_t))) == NULL)
         return ERROR_MEMORY;
 
-    if((st = ADT_NMEA_record_parse_latitude(fields[GPGGA_LON_FIELD_INDEX], &((*gga_node)->longitude), &is_empty)) != OK){
-        ADT_NMEA_record_delete_fields(gga_node);
+    if((st = ADT_NMEA_record_parse_latitude(fields[GPGGA_LON_FIELD_INDEX], &((*nmea_record)->longitude), &is_empty)) != OK){
+        ADT_NMEA_record_delete_fields(nmea_record);
         return st;
     }
 
-    if((st = ADT_NMEA_record_parse_longitude(fields[GPGGA_LAT_FIELD_INDEX], &((*gga_node)->latitude), &is_empty)) != OK){
-        ADT_NMEA_record_delete_fields(gga_node);
+    if((st = ADT_NMEA_record_parse_longitude(fields[GPGGA_LAT_FIELD_INDEX], &((*nmea_record)->latitude), &is_empty)) != OK){
+        ADT_NMEA_record_delete_fields(nmea_record);
         return st;
     }
 
     if(is_empty == TRUE){
-        ADT_NMEA_record_delete_fields(gga_node);
+        ADT_NMEA_record_delete_fields(nmea_record);
         return OK;
     }
 
-    (*gga_node)->altitude = strtod(fields[GPGGA_ALT_FIELD_INDEX], &tmp);
+    (*nmea_record)->altitude = strtod(fields[GPGGA_ALT_FIELD_INDEX], &tmp);
     if(*tmp){
-        ADT_NMEA_record_delete_fields(gga_node);
+        ADT_NMEA_record_delete_fields(nmea_record);
         return ERROR_READING_FILE;
     }
 
     if(!strcmp(fields[GPGGA_NS_INDICATOR_POS], GPGGA_SOUTH_TOKEN)){
-        (*gga_node)->latitude *= -1;
+        (*nmea_record)->latitude *= -1;
     }
     else if(strcmp(fields[GPGGA_NS_INDICATOR_POS], GPGGA_NORTH_TOKEN)){
-        ADT_NMEA_record_delete_fields(gga_node);
+        ADT_NMEA_record_delete_fields(nmea_record);
         return ERROR_READING_FILE;
     }
 
     if(!strcmp(fields[GPGGA_EW_INDICATOR_POS], GPGGA_WEST_TOKEN)){
-        (*gga_node)->longitude *= -1;
+        (*nmea_record)->longitude *= -1;
     }
     else if(strcmp(fields[GPGGA_EW_INDICATOR_POS], GPGGA_EAST_TOKEN)){
-        ADT_NMEA_record_delete_fields(gga_node);
+        ADT_NMEA_record_delete_fields(nmea_record);
         return ERROR_READING_FILE;
     }
 
     return OK;
 }
 
-status_t ADT_NMEA_record_delete_fields(ADT_GGA_t **gga_node)
+status_t ADT_NMEA_record_delete_fields(ADT_NMEA_record_t **nmea_record)
 {
-    free(*gga_node);
-    *gga_node = NULL;
+    free(*nmea_record);
+    *nmea_record = NULL;
 
     return OK;
 }
 
-status_t ADT_NMEA_record_export_as_kml(const ADT_GGA_t *gga, void *_ctx, FILE *fo)
+status_t ADT_NMEA_record_export_as_kml(const ADT_NMEA_record_t *gga, void *_ctx, FILE *fo)
 {
     uchar i;
     xml_context_t *context;
@@ -85,7 +85,7 @@ status_t ADT_NMEA_record_export_as_kml(const ADT_GGA_t *gga, void *_ctx, FILE *f
     return OK;
 }
 
-status_t ADT_NMEA_record_export_as_csv(const ADT_GGA_t *gga, void *ctx, FILE *fo)
+status_t ADT_NMEA_record_export_as_csv(const ADT_NMEA_record_t *gga, void *ctx, FILE *fo)
 {
     string delim;
 

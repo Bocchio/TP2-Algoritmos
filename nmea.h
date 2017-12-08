@@ -3,31 +3,6 @@
 
 #include <stdio.h>
 #include "types.h"
-#include "vector.h"
-
-#define KML_HEADER_FILE	"kml_header.txt"
-#define KML_FOOTER_FILE 	"kml_footer.txt"
-#define KML_COORDINATES_TAG	"coordinates"
-
-#define GPGGA_HEADER	"$GPGGA"
-#define NMEA_GGA_LABEL	"coordinates"
-#define NMEA_FIELD_DELIMITER	","
-
-#define GPGGA_NORTH_TOKEN 	"N"
-#define GPGGA_SOUTH_TOKEN 	"S"
-#define GPGGA_EAST_TOKEN	"E"
-#define GPGGA_WEST_TOKEN	"W"
-
-#define GPGGA_EW_INDICATOR_POS	5
-#define GPGGA_NS_INDICATOR_POS	3
-
-#define GPGGA_HEADER_FIELD_INDEX		1
-#define GPGGA_LATITUDE_FIELD_INDEX		2 /* latitude position on a GPGGA string */
-#define GPGGA_LONGITUDE_FIELD_INDEX		4 /* longitude position on a GPGGA string */
-#define GPGGA_ALTITUDE_FIELD_INDEX		9 /* altitude position on a GPGGA string */
-
-#define OUTPUT_CSV_DELIMITER	"|"
-#define OUTPUT_KML_INDENTATION	4
 
 typedef struct{
 	double latitude;
@@ -40,11 +15,11 @@ status_t NMEA_export_as_kml(const ADT_Vector_t *vector, void * context, FILE *fo
 
 status_t ADT_NMEA_record_parse_latitude(string coord, double *degrees, bool_t *is_empty);
 status_t ADT_NMEA_record_parse_longitude(string coord, double *degrees, bool_t *is_empty);
-status_t ADT_NMEA_record_fields_new_from_strings(ADT_GGA_t **gga_node, string *fields);
-status_t ADT_NMEA_record_delete_fields(ADT_GGA_t **gga_node);
+status_t ADT_NMEA_record_new_from_strings(ADT_NMEA_record_t **nmea_record, string *fields);
+status_t ADT_NMEA_record_delete_fields(ADT_NMEA_record_t **nmea_record);
 status_t ADT_NMEA_record_load_fields(FILE *fi, ADT_Vector_t **gga);
-status_t ADT_NMEA_record_export_as_kml(const ADT_GGA_t *gga_node, void *ctx, FILE *fo);
-status_t ADT_NMEA_record_export_as_csv(const ADT_GGA_t *gga_node, void *ctx, FILE *fo);
+status_t ADT_NMEA_record_export_as_kml(const ADT_NMEA_record_t *nmea_record, void *ctx, FILE *fo);
+status_t ADT_NMEA_record_export_as_csv(const ADT_NMEA_record_t *nmea_record, void *ctx, FILE *fo);
 
 status_t NMEA_get_kml_ctx(void **ctx);
 status_t NMEA_destroy_kml_ctx(void **_ctx);
