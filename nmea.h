@@ -21,10 +21,10 @@
 #define GPGGA_EW_INDICATOR_POS	5
 #define GPGGA_NS_INDICATOR_POS	3
 
-#define GPGGA_HEADER_POS		1
-#define GPGGA_LATITUDE_POS		2 /* latitude position on a GPGGA string */
-#define GPGGA_LONGITUDE_POS		4 /* longitude position on a GPGGA string */
-#define GPGGA_ALTITUDE_POS		9 /* altitude position on a GPGGA string */
+#define GPGGA_HEADER_FIELD_INDEX		1
+#define GPGGA_LATITUDE_FIELD_INDEX		2 /* latitude position on a GPGGA string */
+#define GPGGA_LONGITUDE_FIELD_INDEX		4 /* longitude position on a GPGGA string */
+#define GPGGA_ALTITUDE_FIELD_INDEX		9 /* altitude position on a GPGGA string */
 
 #define OUTPUT_CSV_DELIMITER	"|"
 #define OUTPUT_KML_INDENTATION	4
@@ -33,18 +33,18 @@ typedef struct{
 	double latitude;
 	double longitude;
 	double altitude;
-} ADT_GGA_t;
+} ADT_NMEA_record_t;
 
 status_t NMEA_export_as_csv(const ADT_Vector_t *vector, void *context, FILE *fo);
 status_t NMEA_export_as_kml(const ADT_Vector_t *vector, void * context, FILE *fo);
 
-status_t ADT_GGA_parse_latitude(string coord, double *degrees, bool_t *is_empty);
-status_t ADT_GGA_parse_longitude(string coord, double *degrees, bool_t *is_empty);
-status_t ADT_GGA_fields_new_from_strings(ADT_GGA_t **gga_node, string *fields);
-status_t ADT_GGA_delete_fields(ADT_GGA_t **gga_node);
-status_t ADT_GGA_load_fields(FILE *fi, ADT_Vector_t **gga);
-status_t ADT_GGA_export_as_kml(const ADT_GGA_t *gga_node, void *ctx, FILE *fo);
-status_t ADT_GGA_export_as_csv(const ADT_GGA_t *gga_node, void *ctx, FILE *fo);
+status_t ADT_NMEA_record_parse_latitude(string coord, double *degrees, bool_t *is_empty);
+status_t ADT_NMEA_record_parse_longitude(string coord, double *degrees, bool_t *is_empty);
+status_t ADT_NMEA_record_fields_new_from_strings(ADT_GGA_t **gga_node, string *fields);
+status_t ADT_NMEA_record_delete_fields(ADT_GGA_t **gga_node);
+status_t ADT_NMEA_record_load_fields(FILE *fi, ADT_Vector_t **gga);
+status_t ADT_NMEA_record_export_as_kml(const ADT_GGA_t *gga_node, void *ctx, FILE *fo);
+status_t ADT_NMEA_record_export_as_csv(const ADT_GGA_t *gga_node, void *ctx, FILE *fo);
 
 status_t NMEA_get_kml_ctx(void **ctx);
 status_t NMEA_destroy_kml_ctx(void **_ctx);
