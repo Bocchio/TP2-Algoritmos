@@ -171,8 +171,17 @@ status_t GGA_get_kml_ctx(void **ctx)
     return OK;
 }
 
+/* Checks if a gga record contains valid GPS data */
+bool_t ADT_GGA_record_is_valid(ADT_GGA_record_t *gga_record)
+{
+    if(gga_record->fix_quality == FIX_QUALITY_INVALID)
+        return FALSE;
+
+    return TRUE;
+}
 
 /* Helper functions */
+
 /* parse a GGA latitude string, assumes the string isn't empty */
 status_t GGA_parse_latitude(string latitude_string, double *latitude)
 {

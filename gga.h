@@ -65,6 +65,8 @@ status_t GGA_export_as_kml(const ADT_Vector_t *vector, void * context, FILE *fo)
 status_t ADT_GGA_record_export_as_kml(const ADT_GGA_record_t *gga_record, void *context, FILE *fo);
 status_t ADT_GGA_record_export_as_csv(const ADT_GGA_record_t *gga_record, void *context, FILE *fo);
 
+bool_t ADT_GGA_record_is_valid(ADT_GGA_record_t *gga_record);
+
 /* helper functions */
 
 /* helper functions to parse geographic data
