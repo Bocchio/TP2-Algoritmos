@@ -1,10 +1,15 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "types.h"
 #include "utils.h"
 #include "nmea.h"
-#include "types.h"
 
+status_t ADT_NMEA_record_new(ADT_NMEA_record_t **nmea_record, string *fields)
+{
+
+    return OK;
+}
 
 status_t ADT_NMEA_record_new_from_strings(ADT_NMEA_record_t **nmea_record, string *fields)
 {
@@ -51,14 +56,6 @@ status_t ADT_NMEA_record_new_from_strings(ADT_NMEA_record_t **nmea_record, strin
         ADT_NMEA_record_delete_fields(nmea_record);
         return ERROR_READING_FILE;
     }
-
-    return OK;
-}
-
-status_t ADT_NMEA_record_delete_fields(ADT_NMEA_record_t **nmea_record)
-{
-    free(*nmea_record);
-    *nmea_record = NULL;
 
     return OK;
 }
@@ -174,85 +171,6 @@ status_t NMEA_get_kml_ctx(void **ctx)
     kml_ctx->indentation = OUTPUT_KML_INDENTATION;
 
     *ctx = kml_ctx;
-
-    return OK;
-}
-
-status_t NMEA_destroy_csv_ctx(void **_ctx)
-{
-    *_ctx = NULL;
-
-    return OK;
-}
-
-status_t NMEA_destroy_kml_ctx(void **_ctx)
-{
-    xml_context_t **ctx = (xml_context_t **) _ctx;
-
-    free((*ctx)->header);
-    free((*ctx)->footer);
-    free((*ctx));
-    *ctx = NULL;
-
-    return OK;
-}
-
-status_t parse_NMEA_latitude(string coord, double *degrees, bool_t *is_empty)
-{
-    char *tmp;
-    char *minutes_pos;
-
-    *degrees = 0;
-
-    if((minutes_pos = strchr(coord, '.')) == NULL){
-        /* if coord isn't "" then the file is corrupt*/
-        if(*coord)
-            return ERROR_READING_FILE;
-        *is_empty = TRUE;
-        return OK;
-    }
-    minutes_pos -= 2;
-    /* 60 minutes in a degree */
-    *degrees += strtod(minutes_pos, &tmp)/60.0;
-    if(*tmp)
-        return ERROR_READING_FILE;
-
-    *minutes_pos = '\0';
-    *degrees += strtod(coord, &tmp);
-    if(*tmp)
-        return ERROR_READING_FILE;
-
-    *is_empty = FALSE;
-
-    return OK;
-}
-
-status_t parse_NMEA_longitude(string coord, double *degrees, bool_t *is_empty)
-{
-    char *tmp;
-    char *minutes_pos;
-
-    *degrees = 0;
-
-    if((minutes_pos = strchr(coord, '.')) == NULL){
-        /* if coord isn't "" then the file is corrupt*/
-        if(*coord)
-            return ERROR_READING_FILE;
-        *is_empty = TRUE;
-        return OK;
-    }
-    minutes_pos -= 2;
-    /* 60 minutes in a degree */
-    *degrees += strtod(minutes_pos, &tmp)/60.0;
-    if(*tmp)
-        return ERROR_READING_FILE;
-
-    *minutes_pos = '\0';
-    *degrees += strtod(coord, &tmp);
-    if(*tmp)
-        return ERROR_READING_FILE;
-
-    *is_empty = FALSE;
 
     return OK;
 }

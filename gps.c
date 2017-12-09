@@ -65,33 +65,32 @@ status_t check_NMEA_message(const char *NMEA_message, uint checksum)
     return OK;
 }
 
-
-
-/*status_t ADT_NMEA_record_load_fields(FILE *fi, ADT_Vector_t **gga_vector)
+status_t load_gga_data(FILE *fi, ADT_Vector_t **data)
 {
     status_t st;
+    uint checksum;
     bool_t eof = FALSE;
     string line;
     string *fields;
     size_t len_fields_array;
-    ADT_NMEA_GGA_t *node;
+    ADT_NMEA_record_t *nmea_record;
 
-    if((st = ADT_Vector_new(gga_vector)) != OK){
+    if((st = ADT_Vector_new(data)) != OK){
         return st;
     }
 
-    if((st = ADT_Vector_set_csv_exporter(*gga_vector, ADT_NMEA_record_export_as_csv)) != OK){
-        ADT_NMEA_record_delete_fields(gga_vector);
+    if((st = ADT_Vector_set_csv_exporter(*data, ADT_NMEA_record_export_as_csv)) != OK){
+        ADT_Vector_destroy(data);
         return st;
     }
 
-    if((st = ADT_Vector_set_kml_exporter(*gga_vector, ADT_NMEA_record_export_as_kml)) != OK){
-        ADT_NMEA_record_delete_fields(gga_vector);
+    if((st = ADT_Vector_set_kml_exporter(*data, ADT_NMEA_record_export_as_kml)) != OK){
+        ADT_Vector_destroy(data);
         return st;
     }
 
-    if((st = ADT_Vector_set_label(*gga_vector, KML_COORDINATES_TAG)) != OK){
-        ADT_NMEA_record_delete_fields(gga_vector);
+    if((st = ADT_Vector_set_label(*data, KML_COORDINATES_TAG)) != OK){
+        ADT_Vector_destroy(data);
         return st;
     }
 
@@ -111,15 +110,15 @@ status_t check_NMEA_message(const char *NMEA_message, uint checksum)
             /* create the GGA node */
             if((st = ADT_NMEA_record_new(&node, fields)) != OK){
                 free_string_array(&fields, len_fields_array);
-                ADT_NMEA_record_delete_fields(gga_vector);
+                ADT_NMEA_record_delete_fields(data);
                 return st;
             }
             /* If the node is not NULL (i.e, it contained geografic information) */
             if(node != NULL){
                 /* then append it into vector */
-                if((st = ADT_Vector_append(*gga_vector, node)) != OK){
+                if((st = ADT_Vector_append(*data, node)) != OK){
                     free_string_array(&fields, len_fields_array);
-                    ADT_NMEA_record_delete_fields(gga_vector);
+                    ADT_NMEA_record_delete_fields(data);
                     return st;
                 }
             }
@@ -128,4 +127,64 @@ status_t check_NMEA_message(const char *NMEA_message, uint checksum)
     }
 
     return OK;
-}*/
+}
+
+status_t parse_NMEA_latitude(string coord, double *degrees, bool_t *is_empty)
+{
+    char *tmp;
+    char *minutes_pos;
+
+    *degrees = 0;
+
+    if((minutes_pos = strchr(coord, '.')) == NULL){
+        /* if coord isn't "" then the file is corrupt*/
+        if(*coord)
+            return ERROR_READING_FILE;
+        *is_empty = TRUE;
+        return OK;
+    }
+    minutes_pos -= 2;
+    /* 60 minutes in a degree */
+    *degrees += strtod(minutes_pos, &tmp)/60.0;
+    if(*tmp)
+        return ERROR_READING_FILE;
+
+    *minutes_pos = '\0';
+    *degrees += strtod(coord, &tmp);
+    if(*tmp)
+        return ERROR_READING_FILE;
+
+    *is_empty = FALSE;
+
+    return OK;
+}
+
+status_t parse_NMEA_longitude(string coord, double *degrees, bool_t *is_empty)
+{
+    char *tmp;
+    char *minutes_pos;
+
+    *degrees = 0;
+
+    if((minutes_pos = strchr(coord, '.')) == NULL){
+        /* if coord isn't "" then the file is corrupt*/
+        if(*coord)
+            return ERROR_READING_FILE;
+        *is_empty = TRUE;
+        return OK;
+    }
+    minutes_pos -= 2;
+    /* 60 minutes in a degree */
+    *degrees += strtod(minutes_pos, &tmp)/60.0;
+    if(*tmp)
+        return ERROR_READING_FILE;
+
+    *minutes_pos = '\0';
+    *degrees += strtod(coord, &tmp);
+    if(*tmp)
+        return ERROR_READING_FILE;
+
+    *is_empty = FALSE;
+
+    return OK;
+}

@@ -16,7 +16,7 @@ int main(int argc, char *argv[])
 {
 	status_t st;
     FILE *fi,*fo;
-    ADT_Vector_t *gga_vector;
+    ADT_Vector_t *data;
 
     if((st = validate_arguments(argc, argv, &config)) != OK){
         show_error(st);
