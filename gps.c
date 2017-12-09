@@ -32,10 +32,12 @@ status_t load_gga_data(FILE *fi, ADT_Vector_t **data)
     status_t st;
     uint checksum;
     bool_t eof = FALSE;
+    bool_t gga_header,gga_message_invalid;
     string line;
     string *fields;
     size_t number_of_fields;
-    ADT_NMEA_record_t *nmea_record;
+    ADT_GGA_record_t * node;
+  
 
     if((st = ADT_Vector_new(data)) != OK){
         return st;
@@ -55,53 +57,28 @@ status_t load_gga_data(FILE *fi, ADT_Vector_t **data)
         ADT_Vector_destroy(data);
         return st;
     }
-
-    /* Read every line of the file */
+    
     while(eof == FALSE){
-        if((st = readline(fi, &line, &eof)) != OK){
-            ADT_Vector_destroy(data);
+        if((st = readline(fi,&line,&eof)) != OK){
             return st;
         }
-
-        if((st = get_NMEA_message(line, &checksum)) != OK){
+        
+        /*If it is a GGA message*/
+        if((gga_header = starts_with(line,GPGGA_HEADER)) == FALSE)
+                continue;
+        if((st = ADT_GGA_record_new_from_string(&node,line)) != OK){
+            free(line);
+            ADT_Vector_delete(data);
             return st;
-        }
-
-        /* Create an array of fields from the line read */
-        if((st = split(line, &fields, NMEA_FIELD_DELIMITER, &number_of_fields)) != OK){
-            return st;
-        }
-
-        /* If it's a GGA message */
-        if(!strcmp(fields[GPGGA_HEADER_FIELD_INDEX], GPGGA_HEADER)){
-            /* Check if the line is not corrupt */
-            if((st = check_NMEA_message(line, checksum)) != OK){
-                free(line);
-                line = NULL;
-                free_string_array(&fields, number_of_fields);
-                ADT_Vector_destroy(data);
-                return st;
-            }
-
-            /* create the NMEA record */
-            if((st = ADT_NMEA_record_new(&node, fields)) != OK){
-                free_string_array(&fields, number_of_fields);
-                ADT_NMEA_record_delete_fields(data);
-                return st;
-            }
-            /* If the node is not NULL (i.e, it contained geografic information) */
-            if(node != NULL){
-                /* then append it into vector */
-                if((st = ADT_Vector_append(*data, node)) != OK){
-                    free_string_array(&fields, len_fields_array);
-                    ADT_NMEA_record_delete_fields(data);
-                    return st;
-                }
-            }
         }
         free(line);
-        free_string_array(&fields, len_fields_array);
-    }
-
+        if((gga_message_invalid = fix_quality_invalid(node)) == TRUE)
+             ADT_GGA_record_destroy(&node);
+        else{
+            if((st = ADT_Vector_append(*data,node)) != OK){
+                ADT_Vector_delete(data);
+                return st;
+            }
+        }   
     return OK;
 }
