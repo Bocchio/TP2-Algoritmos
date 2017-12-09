@@ -4,8 +4,6 @@
 #include <stdio.h>
 #include "types.h"
 
-#define GPGGA_HEADER	    "$GPGGA"
-
 #define GGA_NORTH_TOKEN     "N"
 #define GGA_SOUTH_TOKEN     "S"
 #define GGA_EAST_TOKEN      "E"
@@ -67,11 +65,15 @@ status_t GGA_export_as_kml(const ADT_Vector_t *vector, void * context, FILE *fo)
 status_t ADT_GGA_record_export_as_kml(const ADT_GGA_record_t *gga_record, void *context, FILE *fo);
 status_t ADT_GGA_record_export_as_csv(const ADT_GGA_record_t *gga_record, void *context, FILE *fo);
 
+/* helper functions */
+
 /* helper functions to parse geographic data
  * they assume that the strings are not empty */
 status_t GGA_parse_latitude(string latitude_string, double *latitude);
 status_t GGA_parse_longitude(string longitude_string, double *longitude);
 status_t GGA_parse_altitude(string altitude_string, double *altitude);
+
+/* helper function to get the fix quality from a string */
 status_t GGA_parse_fix_quality(string fix_quality_string, fix_quality_t *fix_quality);
 
 
