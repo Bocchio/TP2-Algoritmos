@@ -15,6 +15,7 @@ status_t ADT_GGA_record_new(ADT_GGA_record_t **gga_record)
     (*gga_record)->latitude = 0;
     (*gga_record)->longitude = 0;
     (*gga_record)->altitude = 0;
+    (*gga_record)->fix_quality = 0;
 
     return OK;
 }
@@ -48,12 +49,13 @@ status_t ADT_GGA_record_new_from_string(ADT_GGA_record_t **gga_record, string gg
 status_t ADT_GGA_record_new_from_strings(ADT_GGA_record_t **gga_record, string *fields)
 {
     status_t st;
-    bool_t is_empty;
     char *tmp;
 
-    if((*gga_record = (ADT_GGA_GGA_t *) malloc(sizeof(ADT_GGA_GGA_t))) == NULL)
-        return ERROR_MEMORY;
+    if((st = ADT_GGA_record_new(gga_record)) != OK){
+        return st;
+    }
 
+    if
     if((st = ADT_GGA_record_parse_latitude(fields[GPGGA_LON_FIELD_INDEX], &((*gga_record)->longitude), &is_empty)) != OK){
         ADT_GGA_record_delete_fields(gga_record);
         return st;

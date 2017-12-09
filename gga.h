@@ -4,10 +4,23 @@
 #include <stdio.h>
 #include "types.h"
 
+#define GGA_NORTH_TOKEN     "N"
+#define GGA_SOUTH_TOKEN     "S"
+#define GGA_EAST_TOKEN      "E"
+#define GGA_WEST_TOKEN      "W"
+
+/* field indexes in a GGA message */
+#define GGA_EW_INDICATOR_FIELD_INDEX    5
+#define GGA_NS_INDICATOR_FIELD_INDEX    3
+#define GGA_LATITUDE_FIELD_INDEX        2
+#define GGA_LONGITUDE_FIELD_INDEX       4
+#define GGA_ALTITUDE_FIELD_INDEX        9
+
 typedef struct{
 	double latitude;
 	double longitude;
 	double altitude;
+    uchar fix_quality;
 } ADT_GGA_record_t;
 
 /* constructors */
