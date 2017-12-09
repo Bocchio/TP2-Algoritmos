@@ -4,6 +4,8 @@
 #include <stdio.h>
 #include "types.h"
 
+#define GPGGA_HEADER	    "$GPGGA"
+
 #define GGA_NORTH_TOKEN     "N"
 #define GGA_SOUTH_TOKEN     "S"
 #define GGA_EAST_TOKEN      "E"
