@@ -32,6 +32,7 @@ typedef status_t (*destructor_t)(void **);
 typedef void * (*clonator_t)(const void *);
 typedef status_t (*printer_t)(const void *, void *context, FILE *fo);
 typedef status_t (*creator_t)(void **);
+typedef status_t(*exporter_t)(const ADT_Vector_t *vector, FILE *fo);
 
 typedef struct{
 	string header;
