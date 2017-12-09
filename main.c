@@ -3,6 +3,7 @@
 #include <string.h>
 #include "types.h"
 #include "errors.h"
+#include "lang_support.h"
 #include "gps.h"
 #include "config.h"
 #include "main.h"
@@ -16,16 +17,17 @@ int main(int argc, char *argv[])
 
     if((st = validate_arguments(argc, argv, &config)) != OK){
         show_error(st);
+        show_usage(argv[0]);
         return st;
     }
 
-    if((fi = fopen(config.output_file, "rt")) == NULL){
+    if((fi = fopen(config.input_file, "rt")) == NULL){
         st = ERROR_OPENING_NMEA_FILE;
         show_error(st);
         return st;
     }
 
-    if((fo = fopen(config.input_file, "wt")) == NULL){
+    if((fo = fopen(config.output_file, "wt")) == NULL){
         fclose(fi);
         st = ERROR_OPENING_OUTPUT_FILE;
         show_error(st);
@@ -84,6 +86,13 @@ status_t validate_arguments(int argc, char *argv[], config_t *config)
     }
     /* Parse the input file */
     config->input_file = argv[CMD_ARG_INPUT_FILE_POS];
+
+    return OK;
+}
+
+status_t show_usage(string program_name)
+{
+    fprintf(stderr, "%s: %s %s\n", MSG_USAGE, program_name, PROGRAM_USAGE_MSG);
 
     return OK;
 }

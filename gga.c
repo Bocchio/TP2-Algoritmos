@@ -21,6 +21,14 @@ status_t ADT_GGA_record_new(ADT_GGA_record_t **gga_record)
     return OK;
 }
 
+status_t ADT_GGA_record_destroy(ADT_GGA_record_t **gga_record)
+{
+    free(*gga_record);
+    *gga_record = NULL;
+
+    return OK;
+}
+
 status_t ADT_GGA_record_new_from_string(ADT_GGA_record_t **gga_record, string gga_message)
 {
     status_t st;
@@ -61,6 +69,8 @@ status_t ADT_GGA_record_new_from_strings(ADT_GGA_record_t **gga_record, string *
         return st;
     }
 
+    /* If the fix quality indicator is invalid, there isn't anything
+     * useful to parse */
     if((*gga_record)->fix_quality == FIX_QUALITY_INVALID){
         return OK;
     }
@@ -85,7 +95,7 @@ status_t ADT_GGA_record_new_from_strings(ADT_GGA_record_t **gga_record, string *
     }
 
     if(!strcmp(fields[GGA_EW_INDICATOR_FIELD_INDEX], GGA_WEST_TOKEN)){
-        (*gga_record)->longitude *= -(*gga_record)->longitude;
+        (*gga_record)->longitude = -(*gga_record)->longitude;
     }
 
     return OK;
@@ -133,24 +143,17 @@ bool_t ADT_GGA_record_is_valid(ADT_GGA_record_t *gga_record)
 status_t GGA_parse_latitude(string latitude_string, double *latitude)
 {
     char *tmp;
-    char *minutes_pos;
 
     if(latitude_string == NULL || latitude == NULL){
         return ERROR_NULL_POINTER;
     }
 
-    *latitude = 0;
-    if((minutes_pos = strchr(latitude_string, '.')) == NULL){
-        return ERROR_PARSING_LATITUDE;
-    }
-
-    minutes_pos -= 2;
     /* 60 minutes in a degree */
-    *latitude += strtod(minutes_pos, &tmp)/60.0;
+    *latitude += strtod(latitude_string+2, &tmp)/60.0;
     if(*tmp)
         return ERROR_PARSING_LATITUDE;
 
-    *minutes_pos = '\0';
+    latitude_string[2] = '\0';
     *latitude += strtod(latitude_string, &tmp);
     if(*tmp)
         return ERROR_PARSING_LATITUDE;
@@ -162,24 +165,17 @@ status_t GGA_parse_latitude(string latitude_string, double *latitude)
 status_t GGA_parse_longitude(string longitude_string, double *longitude)
 {
     char *tmp;
-    char *minutes_pos;
 
     if(longitude_string == NULL || longitude == NULL){
         return ERROR_NULL_POINTER;
     }
 
-    *longitude = 0;
-    if((minutes_pos = strchr(longitude_string, '.')) == NULL){
-        return ERROR_PARSING_LONGITUDE;
-    }
-
-    minutes_pos -= 2;
     /* 60 minutes in a degree */
-    *longitude += strtod(minutes_pos, &tmp)/60.0;
+    *longitude = strtod(longitude_string+3, &tmp)/60.0;
     if(*tmp)
         return ERROR_PARSING_LONGITUDE;
 
-    *minutes_pos = '\0';
+    longitude_string[3] = '\0';
     *longitude += strtod(longitude_string, &tmp);
     if(*tmp)
         return ERROR_PARSING_LONGITUDE;

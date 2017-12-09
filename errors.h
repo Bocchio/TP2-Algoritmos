@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include "types.h"
 
-#define MAX_ERRORS 8
+#define MAX_ERRORS 17
 
 status_t show_error(status_t st);
 

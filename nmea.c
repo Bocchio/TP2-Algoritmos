@@ -25,7 +25,7 @@ status_t get_NMEA_message(string NMEA_message, uint *checksum)
 
     /* Get the checksum value. Note that if there isn't one, it's just tries to
      * convert "", which strtoul interprets as 0 */
-    *checksum = strtoul(NMEA_message, &tmp, 10);
+    *checksum = strtoul(NMEA_message, &tmp, 16);
     if(*tmp && *tmp != '\r' && *tmp != '\n'){
         return ERROR_INVALID_LINE;
     }
@@ -38,8 +38,8 @@ status_t check_NMEA_message(const char *NMEA_message, uint checksum)
 {
     uint crc = 0;
 
-    /* Calculate the CRC */
-    for(; *NMEA_message; NMEA_message++){
+    /* Calculate the CRC, skips the beginning of the datagram character $ */
+    for(NMEA_message++; *NMEA_message; NMEA_message++){
         crc ^= *NMEA_message;
     }
 

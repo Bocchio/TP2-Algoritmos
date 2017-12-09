@@ -1,5 +1,7 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include "types.h"
+#include "utils.h"
 #include "vector.h"
 #include "gga.h"
 #include "gps.h"
@@ -21,11 +23,11 @@ status_t process_gps_file(FILE *fi, doc_type_t doc_type, FILE *fo)
         return ERROR_NULL_POINTER;
     }
 
-    if((st = load_gga_data(fi, &gga_data)) != OK){
+    if((st = load_GGA_data(fi, &gga_data)) != OK){
         return st;
     }
 
-    if((st = export_functions[doc_type](gga_data)) != OK){
+    if((st = export_functions[doc_type](gga_data, NULL, fo)) != OK){
         return st;
     }
 
@@ -54,7 +56,7 @@ status_t load_GGA_data(FILE *fi, ADT_Vector_t **gga_data)
         return st;
     }
 
-    if((st = ADT_Vector_set_tag(*gga_data, KML_COORDINATES_TAG)) != OK){
+    if((st = ADT_Vector_set_tag_name(*gga_data, KML_COORDINATES_TAG)) != OK){
         ADT_Vector_destroy(gga_data);
         return st;
     }
@@ -97,6 +99,22 @@ status_t load_GGA_data(FILE *fi, ADT_Vector_t **gga_data)
 
 status_t export_GGA_data_as_csv(ADT_Vector_t *gga_data, void *context, FILE *fo)
 {
+    status_t st;
+
+    if(gga_data == NULL || fo == NULL){
+        return ERROR_NULL_POINTER;
+    }
+
+    if((st = ADT_Vector_export_as_csv(gga_data, OUTPUT_CSV_DELIMITER, fo)) != OK){
+        return st;
+    }
+
+    return OK;
+}
+
+status_t export_GGA_data_as_kml(ADT_Vector_t *gga_data, void *context, FILE *fo)
+{
+    status_t st;
     kml_context_t kml_context;
 
     if(gga_data == NULL || fo == NULL){
@@ -117,19 +135,6 @@ status_t export_GGA_data_as_csv(ADT_Vector_t *gga_data, void *context, FILE *fo)
 
     fclose(kml_context.header);
     fclose(kml_context.footer);
-
-    return OK;
-}
-
-status_t export_GGA_data_as_kml(ADT_Vector_t *gga_data, void *context, FILE *fo)
-{
-    if(gga_data == NULL || fo == NULL){
-        return ERROR_NULL_POINTER;
-    }
-
-    if((st = ADT_Vector_export_as_csv(gga_data, OUTPUT_CSV_DELIMITER, fo)) != OK){
-        return st;
-    }
 
     return OK;
 }
