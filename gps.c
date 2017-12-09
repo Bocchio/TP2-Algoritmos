@@ -3,14 +3,10 @@
 #include "nmea.h"
 #include "vector.h"
 
-printer_t doc_type_exporting_functions[] = {
-    NMEA_export_as_csv,
-    NMEA_export_as_kml
-};
-
-exporter_t NMEA_exporting_functions[] = {
-  NMEA_export_as_csv,
-  NMEA_export_as_kml
+/* Dictionary of functions for exporting GGA data according to a doc type */
+printer_t export_functions[] = {
+    export_GGA_data_as_csv,
+    export_GGA_data_as_kml
 };
 
 void *context;
@@ -24,13 +20,18 @@ status_t process_gps_file(FILE *fi, doc_type_t doc_type, FILE *fo)
         return ERROR_NULL_POINTER;
     }
 
+    if((st = load_gga_data(fi, &gga_data)) != OK){
+        return st;
+    }
 
-
+    if((st = export_functions[doc_type](gga_data)) != OK){
+        return st;
+    }
 
     return OK;
 }
 
-status_t load_gga_data(FILE *fi, ADT_Vector_t **gga_data)
+status_t load_GGA_data(FILE *fi, ADT_Vector_t **gga_data)
 {
     status_t st;
     string line;
@@ -88,6 +89,46 @@ status_t load_gga_data(FILE *fi, ADT_Vector_t **gga_data)
             ADT_Vector_destroy(gga_data);
             return st;
         }
+    }
+
+    return OK;
+}
+
+status_t export_GGA_data_as_csv(ADT_Vector_t *gga_data, void *context, FILE *fo)
+{
+    kml_context_t kml_context;
+
+    if(gga_data == NULL || fo == NULL){
+        return ERROR_NULL_POINTER;
+    }
+
+    /* Set the kml context */
+    if((kml_context.header = fopen(KML_HEADER_FILE, "rt")) == NULL){
+        return ERROR_OPENING_INPUT_FILE;
+    }
+    if((kml_context.footer = fopen(KML_FOOTER_FILE, "rt")) == NULL){
+        return ERROR_OPENING_INPUT_FILE;
+    }
+    kml_context.indentation = OUTPUT_KML_INDENTATION;
+
+    if((st = ADT_Vector_export_as_kml(gga_data, &kml_context, fo)) != OK){
+        return st;
+    }
+
+    fclose(kml_context.header);
+    fclose(kml_context.footer);
+
+    return OK;
+}
+
+status_t export_GGA_data_as_kml(ADT_Vector_t *gga_data, void *context, FILE *fo)
+{
+    if(gga_data == NULL || fo == NULL){
+        return ERROR_NULL_POINTER;
+    }
+
+    if((st = ADT_Vector_export_as_csv(gga_data, OUTPUT_CSV_DELIMITER, fo)) != OK){
+        return st;
     }
 
     return OK;

@@ -103,13 +103,11 @@ status_t ADT_Vector_export_as_csv(const ADT_Vector_t *vector, void *ctx, FILE *f
     return OK;
 }
 
-status_t ADT_Vector_export_as_kml(const ADT_Vector_t *vector, void *_ctx, FILE *fo)
+status_t ADT_Vector_export_as_kml(const ADT_Vector_t *vector, kml_ctx_t *_context, FILE *fo)
 {
     size_t i;
     uchar j;
     status_t st;
-    xml_ctx_t *ctx;
-    xml_ctx_t element_ctx;
 
     if(vector == NULL || _ctx == NULL || fo == NULL)
         return ERROR_NULL_POINTER;

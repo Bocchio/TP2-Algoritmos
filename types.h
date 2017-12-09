@@ -24,20 +24,19 @@ typedef unsigned int uint;
 typedef char * string;
 
 typedef enum {
-	FORMAT_CSV,
-	FORMAT_KML
+	DOC_TYPE_CSV,
+	DOC_TYPE_KML
 } doc_type_t;
 
 typedef status_t (*destructor_t)(void **);
 typedef void * (*clonator_t)(const void *);
 typedef status_t (*printer_t)(const void *, void *context, FILE *fo);
 typedef status_t (*creator_t)(void **);
-typedef status_t(*exporter_t)(const ADT_Vector_t *vector, FILE *fo);
 
 typedef struct{
-	string header;
-	string footer;
+	FILE *header;
+	FILE *footer;
 	uchar indentation;
-} xml_context_t;
+} kml_context_t;
 
-#endif 
+#endif
