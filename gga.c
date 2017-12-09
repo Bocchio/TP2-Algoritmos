@@ -15,7 +15,7 @@ status_t ADT_GGA_record_new(ADT_GGA_record_t **gga_record)
     (*gga_record)->latitude = 0;
     (*gga_record)->longitude = 0;
     (*gga_record)->altitude = 0;
-    (*gga_record)->fix_quality = 0;
+    (*gga_record)->fix_quality = FIX_QUALITY_INVALID;
 
     return OK;
 }
@@ -79,11 +79,11 @@ status_t ADT_GGA_record_new_from_strings(ADT_GGA_record_t **gga_record, string *
         return st;
     }
 
-    if(!strcmp(fields[GPGGA_NS_INDICATOR_POS], GPGGA_SOUTH_TOKEN)){
+    if(!strcmp(fields[GGA_NS_INDICATOR_FIELD_INDEX], GPGGA_SOUTH_TOKEN)){
         (*gga_record)->latitude = -(*gga_record)->latitude;
     }
 
-    if(!strcmp(fields[GPGGA_EW_INDICATOR_POS], GPGGA_WEST_TOKEN)){
+    if(!strcmp(fields[GGA_EW_INDICATOR_FIELD_INDEX], GPGGA_WEST_TOKEN)){
         (*gga_record)->longitude *= -(*gga_record)->longitude;
     }
 
