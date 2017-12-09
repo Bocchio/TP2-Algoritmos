@@ -4,8 +4,14 @@
 #include "vector.h"
 
 printer_t doc_type_exporting_functions[]={
+printer_t doc_type_exporting_functions[] = {
     NMEA_export_as_csv,
     NMEA_export_as_kml
+};
+
+exporter_t NMEA_exporting_functions[] = {
+  NMEA_export_as_csv,
+  NMEA_export_as_kml
 };
 
 void *context;
