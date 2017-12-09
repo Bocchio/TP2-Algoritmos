@@ -5,19 +5,19 @@
 #include "utils.h"
 #include "nmea.h"
 
-status_t ADT_GGA_record_new(ADT_NMEA_record_t **nmea_record, string *fields)
+status_t ADT_GGA_record_new(ADT_GGA_record_t **nmea_record, string *fields)
 {
 
     return OK;
 }
 
-status_t ADT_GGA_record_new_from_strings(ADT_NMEA_record_t **nmea_record, string *fields)
+status_t ADT_GGA_record_new_from_strings(ADT_GGA_record_t **nmea_record, string *fields)
 {
     status_t st;
     bool_t is_empty;
     char *tmp;
 
-    if((*nmea_record = (ADT_GGA_GGA_t *) malloc(sizeof(ADT_NMEA_GGA_t))) == NULL)
+    if((*nmea_record = (ADT_GGA_GGA_t *) malloc(sizeof(ADT_GGA_GGA_t))) == NULL)
         return ERROR_MEMORY;
 
     if((st = ADT_GGA_record_parse_latitude(fields[GPGGA_LON_FIELD_INDEX], &((*nmea_record)->longitude), &is_empty)) != OK){
@@ -60,7 +60,7 @@ status_t ADT_GGA_record_new_from_strings(ADT_NMEA_record_t **nmea_record, string
     return OK;
 }
 
-status_t ADT_GGA_record_export_as_kml(const ADT_NMEA_record_t *gga, void *_ctx, FILE *fo)
+status_t ADT_GGA_record_export_as_kml(const ADT_GGA_record_t *gga, void *_ctx, FILE *fo)
 {
     uchar i;
     xml_context_t *context;
@@ -82,7 +82,7 @@ status_t ADT_GGA_record_export_as_kml(const ADT_NMEA_record_t *gga, void *_ctx, 
     return OK;
 }
 
-status_t ADT_GGA_record_export_as_csv(const ADT_NMEA_record_t *gga, void *ctx, FILE *fo)
+status_t ADT_GGA_record_export_as_csv(const ADT_GGA_record_t *gga, void *ctx, FILE *fo)
 {
     string delim;
 
