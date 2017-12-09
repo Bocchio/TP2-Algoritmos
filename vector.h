@@ -28,7 +28,7 @@ status_t ADT_Vector_append(ADT_Vector_t *vector, void *new_item);
 void * ADT_Vector_get_element(const ADT_Vector_t *vector, size_t pos);
 
 status_t ADT_Vector_export_as_csv(const ADT_Vector_t *vector, const string delim, FILE *fo);
-status_t ADT_Vector_export_as_kml(const ADT_Vector_t *vector, const kml_ctx_t *context, FILE *fo);
+status_t ADT_Vector_export_as_kml(const ADT_Vector_t *vector, const kml_context_t *context, FILE *fo);
 
 /* Setters */
 status_t ADT_Vector_set_destructor(ADT_Vector_t *vector, destructor_t destructor);

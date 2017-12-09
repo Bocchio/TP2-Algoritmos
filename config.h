@@ -7,7 +7,7 @@
 typedef struct{
 	string input_file;
 	string output_file;
-	doc_type_t doc_type;
+	doc_type_t output_doc_type;
 } config_t;
 
 #endif

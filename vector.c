@@ -105,7 +105,7 @@ status_t ADT_Vector_export_as_csv(const ADT_Vector_t *vector, void *ctx, FILE *f
     return OK;
 }
 
-status_t ADT_Vector_export_as_kml(const ADT_Vector_t *vector, kml_ctx_t *context, FILE *fo)
+status_t ADT_Vector_export_as_kml(const ADT_Vector_t *vector, kml_context_t *context, FILE *fo)
 {
     size_t i;
     status_t st;
