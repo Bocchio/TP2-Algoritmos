@@ -15,13 +15,26 @@
 #define GGA_LATITUDE_FIELD_INDEX        2
 #define GGA_LONGITUDE_FIELD_INDEX       4
 #define GGA_ALTITUDE_FIELD_INDEX        9
+#define GGA_FIX_QUALITY_FIELD_INDEX     6
 
 typedef struct{
 	double latitude;
 	double longitude;
 	double altitude;
-    uchar fix_quality;
+    fix_quality_t fix_quality;
 } ADT_GGA_record_t;
+
+typedef enum {
+    FIX_QUALITY_INVALID = 0,
+    FIX_QUALITY_GPS_FIX = 1,
+    FIX_QUALITY_DGPS_FIX = 2,
+    FIX_QUALITY_PPS_FIX = 3,
+    FIX_QUALITY_REAL_TIME_KINEMATIC = 4,
+    FIX_QUALITY_FLOAT_RTK = 5,
+    FIX_QUALITY_ESTIMATED = 6,
+    FIX_QUALITY_MANUAL_INPUT_MODE = 7,
+    FIX_QUALITY_SIMULATION_MODE = 8
+} fix_quality_t;
 
 /* constructors */
 status_t ADT_GGA_record_new(ADT_GGA_record_t **gga_record);

@@ -55,13 +55,18 @@ status_t ADT_GGA_record_new_from_strings(ADT_GGA_record_t **gga_record, string *
         return st;
     }
 
-    if
-    if((st = ADT_GGA_record_parse_latitude(fields[GPGGA_LON_FIELD_INDEX], &((*gga_record)->longitude), &is_empty)) != OK){
+
+    if(){
+
+        return OK;
+    }
+
+    if((st = GGA_parse_latitude(fields[GPGGA_LON_FIELD_INDEX], &((*gga_record)->longitude), &is_empty)) != OK){
         ADT_GGA_record_delete_fields(gga_record);
         return st;
     }
 
-    if((st = ADT_GGA_record_parse_longitude(fields[GPGGA_LAT_FIELD_INDEX], &((*gga_record)->latitude), &is_empty)) != OK){
+    if((st = ADT_GGA_parse_longitude(fields[GPGGA_LAT_FIELD_INDEX], &((*gga_record)->latitude), &is_empty)) != OK){
         ADT_GGA_record_delete_fields(gga_record);
         return st;
     }
