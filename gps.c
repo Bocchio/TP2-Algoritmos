@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include "types.h"
-#include "nmea.h"
 #include "vector.h"
+#include "gga.h"
 
 /* Dictionary of functions for exporting GGA data according to a doc type */
 printer_t export_functions[] = {

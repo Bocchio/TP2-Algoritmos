@@ -4,30 +4,30 @@ LANGUAGE = -DENGLISH
 
 all: gpsviewer clean
 
-gpsviewer: main.o vector.o errors.o utils.o nmea.o config.o processor.o
+gpsviewer: main.o config.o errors.o utils.o vector.o gga.o nmea.o gps.o
 	$(CC) $^ -o $@
 
-vector.o: vector.c vector.h utils.h types.h
-	$(CC) -c $(CFLAGS) $(LANGUAGE) -o $@ $<
+gps.o: gps.c gps.h types.h vector.h gga.h
+	$(CC) -c $(CFLAGS) $(LANGUAGE) $<
 
-utils.o: utils.c utils.h types.h
-	$(CC) -c $(CFLAGS) $(LANGUAGE) -o $@ $<
+nmea.o: nmea.c nmea.h types.h
+	$(CC) -c $(CFLAGS) $(LANGUAGE) $<
+
+gga.o: gga.c gga.h types.h utils.h nmea.h
+	$(CC) -c $(CFLAGS) $(LANGUAGE) $<
+
+vector.o: vector.c vector.h types.h utils.h
+	$(CC) -c $(CFLAGS) $(LANGUAGE) $<
 
 errors.o: errors.c errors.h types.h lang_support.h
-	$(CC) -c $(CFLAGS) $(LANGUAGE) -o $@ $<
+	$(CC) -c $(CFLAGS) $(LANGUAGE) $<
 
-nmea.o: nmea.c nmea.h utils.h types.h
-	$(CC) -c $(CFLAGS) $(LANGUAGE) -o $@ $<
-
-main.o: main.c main.h types.h errors.h config.h utils.h vector.h nmea.h processor.h
-	$(CC) -c $(CFLAGS) $(LANGUAGE) -o $@ $<
+main.o: main.c main.h types.h errors.h config.h
+	$(CC) -c $(CFLAGS) $(LANGUAGE) $<
 
 config.o: config.c config.h types.h
-	$(CC) -c $(CFLAGS) $(LANGUAGE) -o $@ $<
-	
-processor.o: processor.c processor.h types.h nmea.h vector.h
-	$(CC) -c $(CFLAGS) $(LANGUAGE) -o $@ $<
-	
+	$(CC) -c $(CFLAGS) $(LANGUAGE) $<
+
 clean:
-	rm -f *.o 
+	rm -f *.o
 

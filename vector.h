@@ -11,8 +11,8 @@ typedef struct {
     void **elements;
     size_t len;
     size_t alloc_size;
-    string label;
-    destructor_t delete_element;
+    string tag_name;
+    destructor_t destroy_element;
     clonator_t clone_element;
     printer_t export_element_as_csv;
     printer_t export_element_as_kml;
@@ -35,7 +35,6 @@ status_t ADT_Vector_set_destructor(ADT_Vector_t *vector, destructor_t destructor
 status_t ADT_Vector_set_clonator(ADT_Vector_t *vector, clonator_t clonator);
 status_t ADT_Vector_set_csv_exporter(ADT_Vector_t *vector, printer_t csv_exporter);
 status_t ADT_Vector_set_kml_exporter(ADT_Vector_t *vector, printer_t kml_exporter);
-status_t ADT_Vector_set_destructor(ADT_Vector_t *vector, destructor_t destructor);
 status_t ADT_Vector_set_tag_name(ADT_Vector_t *vector, string tag);
 
 #endif

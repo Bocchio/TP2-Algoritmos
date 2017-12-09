@@ -1,8 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "vector.h"
-#include "utils.h"
 #include "types.h"
+#include "utils.h"
+#include "vector.h"
 
 status_t ADT_Vector_new(ADT_Vector_t **vector)
 {
@@ -19,7 +19,7 @@ status_t ADT_Vector_new(ADT_Vector_t **vector)
     }
     (*vector)->alloc_size = ADT_Vector_INIT_CHOP;
     (*vector)->len = 0;
-    (*vector)->label = "";
+    (*vector)->tag_name = "";
     (*vector)->delete_element = NULL;
     (*vector)->clone_element = NULL;
     (*vector)->export_element_as_csv = NULL;
@@ -36,14 +36,16 @@ status_t ADT_Vector_destroy(ADT_Vector_t **vector)
     if(vector == NULL)
         return ERROR_NULL_POINTER;
 
-    if((*vector)->delete_element != NULL){
+    /* If there's a function to destroy each element */
+    if((*vector)->destroy_element != NULL){
         for(i = 0; i < (*vector)->len; i++){
-            if((st = (*vector)->delete_element((*vector)->elements + i)) != OK)
+            if((st = (*vector)->destroy_element((*vector)->elements + i)) != OK)
                 return st;
         }
     }
 
     free((*vector)->elements);
+    (*vector)->elements = NULL;
     free(*vector);
     *vector = NULL;
 
@@ -95,7 +97,7 @@ status_t ADT_Vector_export_as_csv(const ADT_Vector_t *vector, void *ctx, FILE *f
     size_t i;
     status_t st;
 
-    for(i=0;i<vector->len;i++){
+    for(i=0; i < vector->len; i++){
         if((st = vector->export_element_as_csv(vector->elements[i], ctx, fo)) != OK)
             return st;
     }
@@ -107,43 +109,48 @@ status_t ADT_Vector_export_as_kml(const ADT_Vector_t *vector, kml_ctx_t *context
 {
     size_t i;
     status_t st;
-    string header = "", footer = "";
+    string header, footer;
 
     if(vector == NULL || context == NULL || fo == NULL)
         return ERROR_NULL_POINTER;
 
-    if()
+    if((st = load_text_file(context->header, &header)) != OK){
+        return st;
+    }
 
+    if((st = load_text_file(context->footer, &footer)) != OK){
+        return st;
+    }
+
+    /* Print the header */
     if(fputs(context->header, fo) == EOF)
         return ERROR_WRITING_FILE;
 
-    /* open the vectors tag */
-    for(j = 0; j < ctx->indentation; j++)
-        if(fputc('\t', fo) == EOF)
-            return ERROR_WRITING_FILE;
-    if(fprintf(fo, "%c%s%c\n", '<', vector->label, '>') < 0)
+    /* Open the vectors tag */
+    if(fprintf(fo, "%c%s%c\n", '<', vector->tag_name, '>') < 0)
         return ERROR_WRITING_FILE;
 
     /* Export each element */
     for(i = 0; i < vector->len; i++){
-        if((st = vector->export_element_as_kml(vector->elements[i], &element_ctx, fo)) != OK)
+        if((st = vector->export_element_as_kml(vector->elements[i], NULL, fo)) != OK){
+            free(header);
+            free(footer);
             return st;
+        }
     }
 
     /* closes the vectors tag */
-    for(j = 0; j < ctx->indentation; j++)
-        if(fputc('\t', fo) == EOF)
-            return ERROR_WRITING_FILE;
-    if(fprintf(fo, "%s%s%c\n", "</", vector->label, '>') < 0)
+    if(fprintf(fo, "%s%s%c\n", "</", vector->tag_name, '>') < 0)
         return ERROR_WRITING_FILE;
 
-    if(fputs(ctx->footer, fo) == EOF)
+    /* Print the footer */
+    if(fputs(context->footer, fo) == EOF)
         return ERROR_WRITING_FILE;
 
     return OK;
 }
 
-status_t ADT_Vector_set_label(ADT_Vector_t *vector, string label)
+status_t ADT_Vector_set_tag_name(ADT_Vector_t *vector, string label)
 {
     if(vector == NULL || label == NULL)
         return ERROR_NULL_POINTER;
