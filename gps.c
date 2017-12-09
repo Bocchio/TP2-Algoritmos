@@ -30,30 +30,26 @@ status_t process_gps_file(FILE *fi, doc_type_t doc_type, FILE *fo)
 status_t load_gga_data(FILE *fi, ADT_Vector_t **data)
 {
     status_t st;
-    uint checksum;
-    bool_t eof = FALSE;
-    bool_t gga_header, gga_message_invalid;
     string line;
-    string *fields;
-    size_t number_of_fields;
     ADT_GGA_record_t * gga_record;
+    bool_t eof = FALSE;
 
 
     if((st = ADT_Vector_new(data)) != OK){
         return st;
     }
 
-    if((st = ADT_Vector_set_csv_exporter(*data, ADT_NMEA_record_export_as_csv)) != OK){
+    if((st = ADT_Vector_set_csv_exporter(*data, ADT_GGA_record_export_as_csv)) != OK){
         ADT_Vector_destroy(data);
         return st;
     }
 
-    if((st = ADT_Vector_set_kml_exporter(*data, ADT_NMEA_record_export_as_kml)) != OK){
+    if((st = ADT_Vector_set_kml_exporter(*data, ADT_GGA_record_export_as_kml)) != OK){
         ADT_Vector_destroy(data);
         return st;
     }
 
-    if((st = ADT_Vector_set_label(*data, KML_COORDINATES_TAG)) != OK){
+    if((st = ADT_Vector_set_tag(*data, KML_COORDINATES_TAG)) != OK){
         ADT_Vector_destroy(data);
         return st;
     }
@@ -64,7 +60,7 @@ status_t load_gga_data(FILE *fi, ADT_Vector_t **data)
         }
 
         /* If it is a GGA message */
-        if((gga_header = starts_with(line, GPGGA_HEADER)) == FALSE)
+        if((gga_header = starts_with(line, GGA_HEADER)) == FALSE)
             continue;
         if((st = ADT_GGA_record_new_from_string(&gga_record, line)) != OK){
             free(line);
@@ -74,7 +70,7 @@ status_t load_gga_data(FILE *fi, ADT_Vector_t **data)
         free(line);
         if(ADT_GGA_record_is_valid(gga_record) == FALSE)
              ADT_GGA_record_destroy(&gga_record);
-        else {
+        else{
             if((st = ADT_Vector_append(*data, gga_record)) != OK){
                 ADT_GGA_record_destroy(&gga_record);
                 ADT_Vector_destroy(data);

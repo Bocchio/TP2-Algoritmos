@@ -8,8 +8,6 @@
 #define KML_FOOTER_FILE     "kml_footer.txt"
 #define KML_COORDINATES_TAG "coordinates"
 
-#define GPS_DATA_LABEL  "coordinates"
-
 #define NMEA_ID_FIELD_INDEX 0
 
 #define GGA_HEADER  "$GPGGA"
