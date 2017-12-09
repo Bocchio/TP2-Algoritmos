@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include "types.h"
 #include "utils.h"
+#include "nmea.h"
 #include "gga.h"
 
 status_t ADT_GGA_record_new(ADT_GGA_record_t **gga_record)
@@ -22,6 +23,7 @@ status_t ADT_GGA_record_new_from_string(ADT_GGA_record_t **gga_record, string gg
 {
     uint checksum;
     string *fields;
+    size_t number_of_fields;
 
     if((st = get_NMEA_message(gga_message, &checksum)) != OK){
         return st;
@@ -31,8 +33,13 @@ status_t ADT_GGA_record_new_from_string(ADT_GGA_record_t **gga_record, string gg
         return st;
     }
 
-    if((st = split(line, &fields, NMEA_FIELD_DELIMITER, &number_of_fields)) != OK){
-            return st;
+    if((st = split(gga_message, &fields, NMEA_FIELD_DELIMITER, &number_of_fields)) != OK){
+        return st;
+    }
+
+    if((st = ADT_GGA_record_new_from_strings(gga_record, fields)) != OK){
+        free_string_array(&fields, number_of_fields);
+        return st;
     }
 
     return OK;
