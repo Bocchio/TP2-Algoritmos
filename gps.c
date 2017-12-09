@@ -37,7 +37,7 @@ status_t load_gga_data(FILE *fi, ADT_Vector_t **gga_data)
     ADT_GGA_record_t *gga_record;
     bool_t eof = FALSE;
 
-
+    /* Create a vector of GGA records */
     if((st = ADT_Vector_new(gga_data)) != OK){
         return st;
     }
@@ -57,6 +57,7 @@ status_t load_gga_data(FILE *fi, ADT_Vector_t **gga_data)
         return st;
     }
 
+    /* For every line in the input file */
     while(eof == FALSE){
         if((st = readline(fi, &line, &eof)) != OK){
             return st;
