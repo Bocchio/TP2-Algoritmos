@@ -17,12 +17,15 @@
 #define GGA_ALTITUDE_FIELD_INDEX        9
 #define GGA_FIX_QUALITY_FIELD_INDEX     6
 
-typedef struct{
-	double latitude;
-	double longitude;
-	double altitude;
-    fix_quality_t fix_quality;
-} ADT_GGA_record_t;
+#define FIX_QUALITY_INVALID_TOKEN               "0"
+#define FIX_QUALITY_GPS_FIX_TOKEN               "1"
+#define FIX_QUALITY_DGPS_FIX_TOKEN              "2"
+#define FIX_QUALITY_PPS_FIX_TOKEN               "3"
+#define FIX_QUALITY_REAL_TIME_KINEMATIC_TOKEN   "4"
+#define FIX_QUALITY_FLOAT_RTK_TOKEN             "5"
+#define FIX_QUALITY_ESTIMATED_TOKEN             "6"
+#define FIX_QUALITY_MANUAL_INPUT_MODE_TOKEN     "7"
+#define FIX_QUALITY_SIMULATION_MODE_TOKEN       "8"
 
 typedef enum {
     FIX_QUALITY_INVALID = 0,
@@ -35,6 +38,13 @@ typedef enum {
     FIX_QUALITY_MANUAL_INPUT_MODE = 7,
     FIX_QUALITY_SIMULATION_MODE = 8
 } fix_quality_t;
+
+typedef struct{
+	double latitude;
+	double longitude;
+	double altitude;
+    fix_quality_t fix_quality;
+} ADT_GGA_record_t;
 
 /* constructors */
 status_t ADT_GGA_record_new(ADT_GGA_record_t **gga_record);
@@ -60,6 +70,8 @@ status_t ADT_GGA_record_export_as_csv(const ADT_GGA_record_t *gga_record, void *
 status_t GGA_parse_latitude(string latitude_string, double *latitude);
 status_t GGA_parse_longitude(string longitude_string, double *longitude);
 status_t GGA_parse_altitude(string altitude_string, double *altitude);
+status_t GGA_parse_fix_quality(string fix_quality_string, fix_quality_t *fix_quality);
+
 
 
 #endif

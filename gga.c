@@ -55,47 +55,36 @@ status_t ADT_GGA_record_new_from_strings(ADT_GGA_record_t **gga_record, string *
         return st;
     }
 
-
-    if(){
-
-        return OK;
-    }
-
-    if((st = GGA_parse_latitude(fields[GPGGA_LON_FIELD_INDEX], &((*gga_record)->longitude), &is_empty)) != OK){
-        ADT_GGA_record_delete_fields(gga_record);
+    if((st = GGA_parse_fix_quality(fields[GGA_FIX_QUALITY_FIELD_INDEX],
+                                   &((*gga_record)->fix_quality))) != OK){
         return st;
     }
 
-    if((st = ADT_GGA_parse_longitude(fields[GPGGA_LAT_FIELD_INDEX], &((*gga_record)->latitude), &is_empty)) != OK){
-        ADT_GGA_record_delete_fields(gga_record);
-        return st;
-    }
-
-    if(is_empty == TRUE){
-        ADT_GGA_record_delete_fields(gga_record);
+    if((*gga_record)->fix_quality == FIX_QUALITY_INVALID){
         return OK;
     }
 
-    (*gga_record)->altitude = strtod(fields[GPGGA_ALT_FIELD_INDEX], &tmp);
-    if(*tmp){
-        ADT_GGA_record_delete_fields(gga_record);
-        return ERROR_READING_FILE;
+    if((st = GGA_parse_latitude(fields[GGA_LATITUDE_FIELD_INDEX],
+                                &((*gga_record)->latitude))) != OK){
+        return st;
+    }
+
+    if((st = GGA_parse_longitude(fields[GGA_LONGITUDE_FIELD_INDEX],
+                                 &((*gga_record)->longitude))) != OK){
+        return st;
+    }
+
+     if((st = GGA_parse_altitude(fields[GGA_ALTITUDE_FIELD_INDEX],
+                                 &((*gga_record)->altitude))) != OK){
+        return st;
     }
 
     if(!strcmp(fields[GPGGA_NS_INDICATOR_POS], GPGGA_SOUTH_TOKEN)){
-        (*gga_record)->latitude *= -1;
-    }
-    else if(strcmp(fields[GPGGA_NS_INDICATOR_POS], GPGGA_NORTH_TOKEN)){
-        ADT_GGA_record_delete_fields(gga_record);
-        return ERROR_READING_FILE;
+        (*gga_record)->latitude = -(*gga_record)->latitude;
     }
 
     if(!strcmp(fields[GPGGA_EW_INDICATOR_POS], GPGGA_WEST_TOKEN)){
-        (*gga_record)->longitude *= -1;
-    }
-    else if(strcmp(fields[GPGGA_EW_INDICATOR_POS], GPGGA_EAST_TOKEN)){
-        ADT_GGA_record_delete_fields(gga_record);
-        return ERROR_READING_FILE;
+        (*gga_record)->longitude *= -(*gga_record)->longitude;
     }
 
     return OK;
@@ -257,4 +246,50 @@ status_t GGA_parse_altitude(string altitude_string, double *altitude)
         return ERROR_READING_INPUT_FILE;
 
     return OK;
+}
+
+status_t GGA_parse_fix_quality(string fix_quality_string, fix_quality_t *fix_quality)
+{
+    if(fix_quality_string == NULL || fix_quality == NULL){
+        return ERROR_NULL_POINTER;
+    }
+
+    if(!strcmp(FIX_QUALITY_INVALID_TOKEN, fix_quality_string)){
+        *fix_quality = FIX_QUALITY_INVALID;
+        return OK;
+    }
+    else if(!strcmp(FIX_QUALITY_GPS_FIX_TOKEN, fix_quality_string)){
+        *fix_quality = FIX_QUALITY_GPS_FIX;
+        return OK;
+    }
+    else if(!strcmp(FIX_QUALITY_DGPS_FIX_TOKEN, fix_quality_string)){
+        *fix_quality = FIX_QUALITY_DGPS_FIX;
+        return OK;
+    }
+    else if(!strcmp(FIX_QUALITY_PPS_FIX_TOKEN, fix_quality_string)){
+        *fix_quality = FIX_QUALITY_PPS_FIX;
+        return OK;
+    }
+    else if(!strcmp(FIX_QUALITY_REAL_TIME_KINEMATIC_TOKEN, fix_quality_string)){
+        *fix_quality = FIX_QUALITY_REAL_TIME_KINEMATIC;
+        return OK;
+    }
+    else if(!strcmp(FIX_QUALITY_FLOAT_RTK_TOKEN, fix_quality_string)){
+        *fix_quality = FIX_QUALITY_FLOAT_RTK;
+        return OK;
+    }
+    else if(!strcmp(FIX_QUALITY_ESTIMATED_TOKEN, fix_quality_string)){
+        *fix_quality = FIX_QUALITY_ESTIMATED;
+        return OK;
+    }
+    else if(!strcmp(FIX_QUALITY_MANUAL_INPUT_MODE_TOKEN, fix_quality_string)){
+        *fix_quality = FIX_QUALITY_MANUAL_INPUT_MODE;
+        return OK;
+    }
+    else if(!strcmp(FIX_QUALITY_SIMULATION_MODE_TOKEN, fix_quality_string)){
+        fix_quality = FIX_QUALITY_SIMULATION_MODE;
+        return OK;
+    }
+
+    return ERROR_INVALID_LINE;
 }
