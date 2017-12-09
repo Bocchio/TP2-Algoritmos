@@ -13,7 +13,6 @@
 #define GGA_HEADER  "$GPGGA"
 
 #define OUTPUT_CSV_DELIMITER    "|"
-#define OUTPUT_KML_INDENTATION  4
 
 status_t process_gps_file(FILE *fi, doc_type_t doc_type, FILE *fo);
 status_t export_GGA_data_as_csv(ADT_Vector_t *gga_data, void *context, FILE *fo);

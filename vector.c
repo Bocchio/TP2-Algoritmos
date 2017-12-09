@@ -103,23 +103,18 @@ status_t ADT_Vector_export_as_csv(const ADT_Vector_t *vector, void *ctx, FILE *f
     return OK;
 }
 
-status_t ADT_Vector_export_as_kml(const ADT_Vector_t *vector, kml_ctx_t *_context, FILE *fo)
+status_t ADT_Vector_export_as_kml(const ADT_Vector_t *vector, kml_ctx_t *context, FILE *fo)
 {
     size_t i;
-    uchar j;
     status_t st;
+    string header = "", footer = "";
 
-    if(vector == NULL || _ctx == NULL || fo == NULL)
+    if(vector == NULL || context == NULL || fo == NULL)
         return ERROR_NULL_POINTER;
 
-    ctx = (xml_ctx_t *) _ctx;
+    if()
 
-    /* The kml context that each element of the vector will use */
-    element_ctx.header = "";
-    element_ctx.footer = "";
-    element_ctx.indentation = ctx->indentation + 1;
-
-    if(fputs(ctx->header, fo) == EOF)
+    if(fputs(context->header, fo) == EOF)
         return ERROR_WRITING_FILE;
 
     /* open the vectors tag */

@@ -36,7 +36,6 @@ typedef status_t (*creator_t)(void **);
 typedef struct{
 	FILE *header;
 	FILE *footer;
-	uchar indentation;
 } kml_context_t;
 
 #endif

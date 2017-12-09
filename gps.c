@@ -109,7 +109,6 @@ status_t export_GGA_data_as_csv(ADT_Vector_t *gga_data, void *context, FILE *fo)
     if((kml_context.footer = fopen(KML_FOOTER_FILE, "rt")) == NULL){
         return ERROR_OPENING_INPUT_FILE;
     }
-    kml_context.indentation = OUTPUT_KML_INDENTATION;
 
     if((st = ADT_Vector_export_as_kml(gga_data, &kml_context, fo)) != OK){
         return st;
