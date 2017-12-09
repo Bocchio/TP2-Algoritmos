@@ -121,7 +121,7 @@ status_t ADT_GGA_record_export_as_csv(const ADT_GGA_record_t *gga_record, const 
         return ERROR_NULL_POINTER;
 
     if(fprintf(fo, "%f%s%f%s%i\n", gga_record->latitude, delimiter,
-                                   gga_record->latitude, delimiter,
+                                   gga_record->longitude, delimiter,
                                    (int) gga_record->altitude) < 0)
         return ERROR_WRITING_OUTPUT_FILE;
 
