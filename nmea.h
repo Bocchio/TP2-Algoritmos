@@ -26,7 +26,7 @@ status_t NMEA_export_as_csv(const ADT_Vector_t *vector, void *context, FILE *fo)
 status_t NMEA_export_as_kml(const ADT_Vector_t *vector, void * context, FILE *fo);
 
 
-status_t ADT_NMEA_record_export_as_kml(const ADT_NMEA_record_t *nmea_record, void *ctx, FILE *fo);
-status_t ADT_NMEA_record_export_as_csv(const ADT_NMEA_record_t *nmea_record, void *ctx, FILE *fo);
+status_t ADT_NMEA_record_export_as_kml(const ADT_NMEA_record_t *nmea_record, void *context, FILE *fo);
+status_t ADT_NMEA_record_export_as_csv(const ADT_NMEA_record_t *nmea_record, void *context, FILE *fo);
 
 #endif
