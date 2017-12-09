@@ -208,3 +208,80 @@ status_t GGA_get_kml_ctx(void **ctx)
 
     return OK;
 }
+
+
+/* Helper functions */
+/* parse a GGA latitude string, assumes the string isn't empty */
+status_t GGA_parse_latitude(string latitude_string, double *latitude)
+{
+    char *tmp;
+    char *minutes_pos;
+
+    if(latitude_string == NULL || latitude == NULL){
+        return ERROR_NULL_POINTER;
+    }
+
+    *latitude = 0;
+    if((minutes_pos = strchr(latitude_string, '.')) == NULL){
+        return ERROR_READING_INPUT_FILE;
+    }
+
+    minutes_pos -= 2;
+    /* 60 minutes in a degree */
+    *latitude += strtod(minutes_pos, &tmp)/60.0;
+    if(*tmp)
+        return ERROR_READING_INPUT_FILE;
+
+    *minutes_pos = '\0';
+    *latitude += strtod(latitude_string, &tmp);
+    if(*tmp)
+        return ERROR_READING_INPUT_FILE;
+
+    return OK;
+}
+
+/* parse a GGA longitude string, assumes the string isn't empty */
+status_t GGA_parse_longitude(string longitude_string, double *longitude)
+{
+    char *tmp;
+    char *minutes_pos;
+
+    if(longitude_string == NULL || longitude == NULL){
+        return ERROR_NULL_POINTER;
+    }
+
+    *longitude = 0;
+    if((minutes_pos = strchr(longitude_string, '.')) == NULL){
+        return ERROR_READING_INPUT_FILE;
+    }
+
+    minutes_pos -= 2;
+    /* 60 minutes in a degree */
+    *longitude += strtod(minutes_pos, &tmp)/60.0;
+    if(*tmp)
+        return ERROR_READING_INPUT_FILE;
+
+    *minutes_pos = '\0';
+    *longitude += strtod(longitude_string, &tmp);
+    if(*tmp)
+        return ERROR_READING_INPUT_FILE;
+
+    return OK;
+}
+
+
+/* parse a GGA altitude string, assumes the string isn't empty */
+status_t GGA_parse_altitude(string altitude_string, double *altitude)
+{
+    char *tmp;
+
+    if(altitude_string == NULL || altitude == NULL){
+        return ERROR_NULL_POINTER;
+    }
+
+    *altitude = strtod(altitude_string, &tmp);
+    if(*tmp)
+        return ERROR_READING_INPUT_FILE;
+
+    return OK;
+}
