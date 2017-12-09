@@ -3,57 +3,57 @@
 #include <string.h>
 #include "types.h"
 #include "utils.h"
-#include "nmea.h"
+#include "gga.h"
 
-status_t ADT_GGA_record_new(ADT_GGA_record_t **nmea_record, string *fields)
+status_t ADT_GGA_record_new(ADT_GGA_record_t **gga_record, string *fields)
 {
 
     return OK;
 }
 
-status_t ADT_GGA_record_new_from_strings(ADT_GGA_record_t **nmea_record, string *fields)
+status_t ADT_GGA_record_new_from_strings(ADT_GGA_record_t **gga_record, string *fields)
 {
     status_t st;
     bool_t is_empty;
     char *tmp;
 
-    if((*nmea_record = (ADT_GGA_GGA_t *) malloc(sizeof(ADT_GGA_GGA_t))) == NULL)
+    if((*gga_record = (ADT_GGA_GGA_t *) malloc(sizeof(ADT_GGA_GGA_t))) == NULL)
         return ERROR_MEMORY;
 
-    if((st = ADT_GGA_record_parse_latitude(fields[GPGGA_LON_FIELD_INDEX], &((*nmea_record)->longitude), &is_empty)) != OK){
-        ADT_GGA_record_delete_fields(nmea_record);
+    if((st = ADT_GGA_record_parse_latitude(fields[GPGGA_LON_FIELD_INDEX], &((*gga_record)->longitude), &is_empty)) != OK){
+        ADT_GGA_record_delete_fields(gga_record);
         return st;
     }
 
-    if((st = ADT_GGA_record_parse_longitude(fields[GPGGA_LAT_FIELD_INDEX], &((*nmea_record)->latitude), &is_empty)) != OK){
-        ADT_GGA_record_delete_fields(nmea_record);
+    if((st = ADT_GGA_record_parse_longitude(fields[GPGGA_LAT_FIELD_INDEX], &((*gga_record)->latitude), &is_empty)) != OK){
+        ADT_GGA_record_delete_fields(gga_record);
         return st;
     }
 
     if(is_empty == TRUE){
-        ADT_GGA_record_delete_fields(nmea_record);
+        ADT_GGA_record_delete_fields(gga_record);
         return OK;
     }
 
-    (*nmea_record)->altitude = strtod(fields[GPGGA_ALT_FIELD_INDEX], &tmp);
+    (*gga_record)->altitude = strtod(fields[GPGGA_ALT_FIELD_INDEX], &tmp);
     if(*tmp){
-        ADT_GGA_record_delete_fields(nmea_record);
+        ADT_GGA_record_delete_fields(gga_record);
         return ERROR_READING_FILE;
     }
 
     if(!strcmp(fields[GPGGA_NS_INDICATOR_POS], GPGGA_SOUTH_TOKEN)){
-        (*nmea_record)->latitude *= -1;
+        (*gga_record)->latitude *= -1;
     }
     else if(strcmp(fields[GPGGA_NS_INDICATOR_POS], GPGGA_NORTH_TOKEN)){
-        ADT_GGA_record_delete_fields(nmea_record);
+        ADT_GGA_record_delete_fields(gga_record);
         return ERROR_READING_FILE;
     }
 
     if(!strcmp(fields[GPGGA_EW_INDICATOR_POS], GPGGA_WEST_TOKEN)){
-        (*nmea_record)->longitude *= -1;
+        (*gga_record)->longitude *= -1;
     }
     else if(strcmp(fields[GPGGA_EW_INDICATOR_POS], GPGGA_EAST_TOKEN)){
-        ADT_GGA_record_delete_fields(nmea_record);
+        ADT_GGA_record_delete_fields(gga_record);
         return ERROR_READING_FILE;
     }
 
