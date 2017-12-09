@@ -9,5 +9,7 @@
 
 status_t get_NMEA_message(string NMEA_message, uint *checksum);
 status_t check_NMEA_message(const char * NMEA_message, uint checksum);
+ status_t NMEA_export_as_csv(const ADT_Vector_t *vector, FILE *fo);
+ status_t NMEA_export_as_kml(const ADT_Vector_t *vector, FILE *fo);
 
 #endif
