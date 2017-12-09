@@ -130,40 +130,6 @@ status_t ADT_GGA_record_export_as_csv(const ADT_GGA_record_t *gga, void *ctx, FI
     return OK;
 }
 
-status_t GGA_export_as_csv(const ADT_Vector_t *vector, void *context, FILE *fo)
-{
-    status_t st;
-    *context = OUTPUT_CSV_DELIMITER;
-
-    if(vector == NULL)
-        return ERROR_NULL_POINTER;
-
-    if((st = ADT_Vector_export_as_csv(vector, context, fo)) != OK)
-        return st;
-
-    GGA_destroy_csv_ctx(&context);
-
-    return OK;
-}
-
-status_t GGA_export_as_kml(const ADT_Vector_t *vector, void * context, FILE *fo)
-{
-    status_t st;
-
-    if(vector == NULL)
-        return ERROR_NULL_POINTER;
-
-    if((st = GGA_get_kml_ctx(&context)) != OK)
-        return st;
-
-    if((st = ADT_Vector_export_as_kml(vector, context, fo)) != OK)
-        return st;
-
-    GGA_destroy_kml_ctx(&context);
-
-    return OK;
-}
-
 status_t GGA_get_kml_ctx(void **ctx)
 {
     status_t st;
