@@ -1,12 +1,39 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 #include "types.h"
 #include "utils.h"
 #include "gga.h"
 
-status_t ADT_GGA_record_new(ADT_GGA_record_t **gga_record, string *fields)
+status_t ADT_GGA_record_new(ADT_GGA_record_t **gga_record)
 {
+
+    if((*gga_record = (ADT_GGA_record_t *) malloc(sizeof(ADT_GGA_record_t)) == NULL)){
+        return ERROR_MEMORY;
+    }
+
+    (*gga_record)->latitude = 0;
+    (*gga_record)->longitude = 0;
+    (*gga_record)->altitude = 0;
+
+    return OK;
+}
+
+status_t ADT_GGA_record_new_from_string(ADT_GGA_record_t **gga_record, string gga_message)
+{
+    uint checksum;
+    string *fields;
+
+    if((st = get_NMEA_message(gga_message, &checksum)) != OK){
+        return st;
+    }
+
+    if((st = check_NMEA_message(gga_message, checksum)) != OK){
+        return st;
+    }
+
+    if((st = split(line, &fields, NMEA_FIELD_DELIMITER, &number_of_fields)) != OK){
+            return st;
+    }
 
     return OK;
 }
