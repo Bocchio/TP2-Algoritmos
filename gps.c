@@ -72,7 +72,7 @@ status_t load_gga_data(FILE *fi, ADT_Vector_t **data)
     bool_t eof = FALSE;
     string line;
     string *fields;
-    size_t len_fields_array;
+    size_t number_of_fields;
     ADT_NMEA_record_t *nmea_record;
 
     if((st = ADT_Vector_new(data)) != OK){
@@ -97,19 +97,33 @@ status_t load_gga_data(FILE *fi, ADT_Vector_t **data)
     /* Read every line of the file */
     while(eof == FALSE){
         if((st = readline(fi, &line, &eof)) != OK){
+            ADT_Vector_destroy(data);
             return st;
         }
+
+        if((st = get_NMEA_message(line, &checksum)) != OK){
+            return st;
+        }
+
         /* Create an array of fields from the line read */
-        if((st = split(line, &fields, NMEA_FIELD_DELIMITER, &len_fields_array)) != OK){
+        if((st = split(line, &fields, NMEA_FIELD_DELIMITER, &number_of_fields)) != OK){
             return st;
         }
-        free(line);
 
         /* If it's a GGA message */
         if(!strcmp(fields[GPGGA_HEADER_FIELD_INDEX], GPGGA_HEADER)){
-            /* create the GGA node */
+            /* Check if the line is not corrupt */
+            if((st = check_NMEA_message(line, checksum)) != OK){
+                free(line);
+                line = NULL;
+                free_string_array(&fields, number_of_fields);
+                ADT_Vector_destroy(data);
+                return st;
+            }
+
+            /* create the NMEA record */
             if((st = ADT_NMEA_record_new(&node, fields)) != OK){
-                free_string_array(&fields, len_fields_array);
+                free_string_array(&fields, number_of_fields);
                 ADT_NMEA_record_delete_fields(data);
                 return st;
             }
@@ -123,6 +137,7 @@ status_t load_gga_data(FILE *fi, ADT_Vector_t **data)
                 }
             }
         }
+        free(line);
         free_string_array(&fields, len_fields_array);
     }
 
