@@ -3,6 +3,7 @@
 
 #include <stdio.h>
 #include "types.h"
+#include "vector.h"
 
 #define KML_HEADER_FILE     "kml_header.txt"
 #define KML_FOOTER_FILE     "kml_footer.txt"

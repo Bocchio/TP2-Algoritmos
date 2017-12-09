@@ -1,10 +1,10 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include "nmea.h"
 
 /* takes a line from a NMEA file and extracts the message and the checksum */
 status_t get_NMEA_message(string NMEA_message, uint *checksum)
 {
-    size_t i;
     char *tmp;
 
     if(NMEA_message == NULL || checksum == NULL){
@@ -25,8 +25,8 @@ status_t get_NMEA_message(string NMEA_message, uint *checksum)
 
     /* Get the checksum value. Note that if there isn't one, it's just tries to
      * convert "", which strtoul interprets as 0 */
-    checksum = strtoul(NMEA_message, &tmp, 10);
-    if(*tmp && tmp != '\r' && tmp != '\n'){
+    *checksum = strtoul(NMEA_message, &tmp, 10);
+    if(*tmp && *tmp != '\r' && *tmp != '\n'){
         return ERROR_INVALID_LINE;
     }
 

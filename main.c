@@ -3,11 +3,11 @@
 #include <string.h>
 #include "types.h"
 #include "errors.h"
+#include "gps.h"
 #include "config.h"
-#include "utils.h"
 #include "main.h"
 
-extern config;
+extern config_t config;
 
 int main(int argc, char *argv[])
 {
@@ -19,30 +19,30 @@ int main(int argc, char *argv[])
         return st;
     }
 
-    if((fi = fopen(config.fi_path, "rt")) == NULL){
-        st = ERROR_OPENING_INPUT_FILE;
+    if((fi = fopen(config.output_file, "rt")) == NULL){
+        st = ERROR_OPENING_NMEA_FILE;
         show_error(st);
         return st;
     }
 
-    if((fo = fopen(config.fo_path, "wt")) == NULL){
+    if((fo = fopen(config.input_file, "wt")) == NULL){
         fclose(fi);
         st = ERROR_OPENING_OUTPUT_FILE;
         show_error(st);
         return st;
     }
 
-    if((st = process_gps_file(fi, config.doc_type, fo)) != OK){
+    if((st = process_gps_file(fi, config.output_doc_type, fo)) != OK){
         fclose(fi);
         if(fclose(fo) == EOF)
-            show_error(ERROR_WRITING_FILE);
+            show_error(ERROR_WRITING_OUTPUT_FILE);
         show_error(st);
         return st;
     }
 
     fclose(fi);
     if(fclose(fo) == EOF){
-        st = ERROR_WRITING_FILE;
+        st = ERROR_WRITING_OUTPUT_FILE;
         show_error(st);
         return st;
     }
@@ -53,7 +53,6 @@ int main(int argc, char *argv[])
 status_t validate_arguments(int argc, char *argv[], config_t *config)
 {
     size_t i;
-    status_t st;
 
     if(argv == NULL || config == NULL)
         return ERROR_NULL_POINTER;

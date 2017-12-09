@@ -20,7 +20,7 @@ status_t ADT_Vector_new(ADT_Vector_t **vector)
     (*vector)->alloc_size = ADT_Vector_INIT_CHOP;
     (*vector)->len = 0;
     (*vector)->tag_name = "";
-    (*vector)->delete_element = NULL;
+    (*vector)->destroy_element = NULL;
     (*vector)->clone_element = NULL;
     (*vector)->export_element_as_csv = NULL;
     (*vector)->export_element_as_kml = NULL;
@@ -92,13 +92,13 @@ void * ADT_Vector_get_element(const ADT_Vector_t *vector, size_t pos)
     return vector->elements[pos];
 }
 
-status_t ADT_Vector_export_as_csv(const ADT_Vector_t *vector, void *ctx, FILE *fo)
+status_t ADT_Vector_export_as_csv(const ADT_Vector_t *vector, const string delimiter, FILE *fo)
 {
     size_t i;
     status_t st;
 
     for(i=0; i < vector->len; i++){
-        if((st = vector->export_element_as_csv(vector->elements[i], ctx, fo)) != OK)
+        if((st = vector->export_element_as_csv(vector->elements[i], delimiter, fo)) != OK)
             return st;
     }
 
@@ -114,6 +114,7 @@ status_t ADT_Vector_export_as_kml(const ADT_Vector_t *vector, kml_context_t *con
     if(vector == NULL || context == NULL || fo == NULL)
         return ERROR_NULL_POINTER;
 
+    /* Load the header and the footer from the files */
     if((st = load_text_file(context->header, &header)) != OK){
         return st;
     }
@@ -122,13 +123,12 @@ status_t ADT_Vector_export_as_kml(const ADT_Vector_t *vector, kml_context_t *con
         return st;
     }
 
-    /* Print the header */
-    if(fputs(context->header, fo) == EOF)
-        return ERROR_WRITING_FILE;
+    if(fputs(header, fo) == EOF)
+        return ERROR_WRITING_OUTPUT_FILE;
 
     /* Open the vectors tag */
     if(fprintf(fo, "%c%s%c\n", '<', vector->tag_name, '>') < 0)
-        return ERROR_WRITING_FILE;
+        return ERROR_WRITING_OUTPUT_FILE;
 
     /* Export each element */
     for(i = 0; i < vector->len; i++){
@@ -141,21 +141,20 @@ status_t ADT_Vector_export_as_kml(const ADT_Vector_t *vector, kml_context_t *con
 
     /* closes the vectors tag */
     if(fprintf(fo, "%s%s%c\n", "</", vector->tag_name, '>') < 0)
-        return ERROR_WRITING_FILE;
+        return ERROR_WRITING_OUTPUT_FILE;
 
-    /* Print the footer */
-    if(fputs(context->footer, fo) == EOF)
-        return ERROR_WRITING_FILE;
+    if(fputs(footer, fo) == EOF)
+        return ERROR_WRITING_OUTPUT_FILE;
 
     return OK;
 }
 
-status_t ADT_Vector_set_tag_name(ADT_Vector_t *vector, string label)
+status_t ADT_Vector_set_tag_name(ADT_Vector_t *vector, string tag_name)
 {
-    if(vector == NULL || label == NULL)
+    if(vector == NULL || tag_name == NULL)
         return ERROR_NULL_POINTER;
 
-    vector->label = label;
+    vector->tag_name = tag_name;
 
     return OK;
 }
@@ -165,7 +164,7 @@ status_t ADT_Vector_set_destructor(ADT_Vector_t *vector, destructor_t destructor
     if(vector == NULL)
         return ERROR_NULL_POINTER;
 
-    vector->delete_element = destructor;
+    vector->destroy_element = destructor;
 
     return OK;
 }

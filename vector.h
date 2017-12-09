@@ -27,14 +27,15 @@ status_t ADT_Vector_destroy(ADT_Vector_t **vector);
 status_t ADT_Vector_append(ADT_Vector_t *vector, void *new_item);
 void * ADT_Vector_get_element(const ADT_Vector_t *vector, size_t pos);
 
-status_t ADT_Vector_export_as_csv(const ADT_Vector_t *vector, const string delim, FILE *fo);
-status_t ADT_Vector_export_as_kml(const ADT_Vector_t *vector, const kml_context_t *context, FILE *fo);
+status_t ADT_Vector_export_as_csv(const ADT_Vector_t *vector, const string delimiter, FILE *fo);
+status_t ADT_Vector_export_as_kml(const ADT_Vector_t *vector, kml_context_t *context, FILE *fo);
 
 /* Setters */
+status_t ADT_Vector_set_tag_name(ADT_Vector_t *vector, string tag_name);
 status_t ADT_Vector_set_destructor(ADT_Vector_t *vector, destructor_t destructor);
 status_t ADT_Vector_set_clonator(ADT_Vector_t *vector, clonator_t clonator);
 status_t ADT_Vector_set_csv_exporter(ADT_Vector_t *vector, printer_t csv_exporter);
 status_t ADT_Vector_set_kml_exporter(ADT_Vector_t *vector, printer_t kml_exporter);
-status_t ADT_Vector_set_tag_name(ADT_Vector_t *vector, string tag);
+
 
 #endif

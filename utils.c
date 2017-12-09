@@ -19,7 +19,6 @@ status_t readline(FILE *fi, string *s, bool_t *eof)
 
     alloc_size = INIT_CHOP;
     len = 0;
-
     while((c = fgetc(fi)) != '\n' && c != EOF){
         /* Check if we need more space taking into account the future NUL terminator */
         if(len == alloc_size - 1){
@@ -135,7 +134,7 @@ bool_t starts_with(const char * s1, const char * s2)
        split("hello worldsepsep!!sep", &dest, "sep");
    would put {"hello world", "", "!!", "", NULL} inside dest
 */
-status_t split(const char * src, char ***dest, char *delim, size_t *substrings_number)
+status_t split(const char * src, char ***dest, char *delim, size_t *number_of_substrings)
 {
     status_t st;
     size_t i, j;
@@ -143,7 +142,7 @@ status_t split(const char * src, char ***dest, char *delim, size_t *substrings_n
     char * copy;
     char * aux;
 
-    if(src == NULL || dest == NULL || delim == NULL || substrings_number == NULL)
+    if(src == NULL || dest == NULL || delim == NULL || number_of_substrings == NULL)
         return ERROR_NULL_POINTER;
 
     if((st = strdup(src, &copy)) != OK){
@@ -152,23 +151,23 @@ status_t split(const char * src, char ***dest, char *delim, size_t *substrings_n
 
     delim_len = strlen(delim);
     /* Count the total number of substrings and NUL terminate them */
-    for(i = 0, *substrings_number = 1; copy[i]; i++){
+    for(i = 0, *number_of_substrings = 1; copy[i]; i++){
         if(starts_with(copy + i, delim) == FALSE)
             continue;
         /* If the delimiter string was found, NUL terminate the substring
          * then jump to the end of the delimiter */
         copy[i] = '\0';
-        (*substrings_number)++;
+        (*number_of_substrings)++;
         /* The for post-increment will add 1, so we substract 1 to compensate */
         i += delim_len - 1;
     }
 
     /* Take into account the the NULL pointer at the end */
-    if((*dest = (char **) malloc((*substrings_number + 1)*sizeof(char *))) == NULL)
+    if((*dest = (char **) malloc((*number_of_substrings + 1)*sizeof(char *))) == NULL)
         return ERROR_MEMORY;
 
     /* Copy each substring into the array of strings */
-    for(i = 0; i < *substrings_number; i++){
+    for(i = 0; i < *number_of_substrings; i++){
         if((st = strdup(copy, &aux)) != OK){
             for(j = 0; j < i; j++)
                 free((*dest)[j]);

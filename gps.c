@@ -2,11 +2,12 @@
 #include "types.h"
 #include "vector.h"
 #include "gga.h"
+#include "gps.h"
 
 /* Dictionary of functions for exporting GGA data according to a doc type */
 printer_t export_functions[] = {
-    export_GGA_data_as_csv,
-    export_GGA_data_as_kml
+    (printer_t) export_GGA_data_as_csv,
+    (printer_t) export_GGA_data_as_kml
 };
 
 void *context;
@@ -104,10 +105,10 @@ status_t export_GGA_data_as_csv(ADT_Vector_t *gga_data, void *context, FILE *fo)
 
     /* Set the kml context */
     if((kml_context.header = fopen(KML_HEADER_FILE, "rt")) == NULL){
-        return ERROR_OPENING_INPUT_FILE;
+        return ERROR_OPENING_CONFIG_FILE;
     }
     if((kml_context.footer = fopen(KML_FOOTER_FILE, "rt")) == NULL){
-        return ERROR_OPENING_INPUT_FILE;
+        return ERROR_OPENING_CONFIG_FILE;
     }
 
     if((st = ADT_Vector_export_as_kml(gga_data, &kml_context, fo)) != OK){
