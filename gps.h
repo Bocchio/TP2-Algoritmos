@@ -12,7 +12,7 @@
 
 #define NMEA_ID_FIELD_INDEX 0
 
-#define GGA_MSG_ID          "$GPGGA"
+#define GGA_HEADER  "$GPGGA"
 
 #define OUTPUT_CSV_DELIMITER    "|"
 #define OUTPUT_KML_INDENTATION  4
